@@ -72,7 +72,7 @@ public class AuthServiceImpl implements AuthService {
     public User getUserFromToken(String authHeader){
         String token = authHeader.replace("Bearer","").trim();
         String email = jwtUtil.extractEmail(token);
-        return userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User Not Found!"));
+        return userRepository.findByEmail(email).orElseThrow(()->new UserNotFound("Invalid Credentials!"));
     }
 
     @Override

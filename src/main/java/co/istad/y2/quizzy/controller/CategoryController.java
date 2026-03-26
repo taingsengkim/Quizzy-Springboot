@@ -4,8 +4,14 @@ import co.istad.y2.quizzy.dto.category.CategoryResponseDto;
 import co.istad.y2.quizzy.dto.category.CreateCategoryDto;
 import co.istad.y2.quizzy.dto.category.ListCategoryResponseDto;
 import co.istad.y2.quizzy.dto.category.UpdateCategoryDto;
+import co.istad.y2.quizzy.exception.user.InvalidCredentialsException;
+import co.istad.y2.quizzy.model.Role;
+import co.istad.y2.quizzy.model.User;
+import co.istad.y2.quizzy.service.AuthService;
+import co.istad.y2.quizzy.service.CategoryService;
 import co.istad.y2.quizzy.service.CategoryServiceImpl;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,14 +19,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
-    private final CategoryServiceImpl categoryService;
-    public CategoryController(CategoryServiceImpl categoryService ){
+    private final CategoryService categoryService;
+    private final AuthService authService;
+    public CategoryController(CategoryService categoryService,
+                              AuthService authService){
         this.categoryService = categoryService;
+        this.authService = authService;
     }
     @PostMapping
     public CategoryResponseDto createResponseDto(
             @RequestHeader("Authorization") String authHeader,
             @Valid @RequestBody CreateCategoryDto createCategoryDto){
+
+        User user = authService.getUserFromToken(authHeader);
+
+        if(user.getRole()!= Role.ADMIN){
+            throw new InvalidCredentialsException("Unauthorized");
+        }
+
         return categoryService.createCategory(createCategoryDto);
     }
 
