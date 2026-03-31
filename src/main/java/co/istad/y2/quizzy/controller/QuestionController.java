@@ -9,6 +9,7 @@ import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.service.AuthService;
 import co.istad.y2.quizzy.service.QuestionServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,14 +52,16 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public QuestionResponseDto updateQuestion(@PathVariable Long id,
-                                               @RequestBody UpdateQuestionDto updateQuestionDto,@RequestParam Long userId){
+                                               @RequestBody UpdateQuestionDto updateQuestionDto){
 
         log.info("Id : " + id + " | updateQuestionDto : " + updateQuestionDto);
         return questionService.updateQuestion(id,updateQuestionDto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteQuestion(@PathVariable Long id){
+    public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
         questionService.deleteQuestion(id);
+        return ResponseEntity.noContent().build();
     }
+
 }
