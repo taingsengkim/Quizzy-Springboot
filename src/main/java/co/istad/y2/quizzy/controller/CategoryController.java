@@ -28,17 +28,27 @@ public class CategoryController {
         this.categoryService = categoryService;
         this.authService = authService;
     }
+//    @PostMapping
+//    public CategoryResponseDto createResponseDto(
+//            @RequestHeader("Authorization") String authHeader,
+//            @Valid @RequestBody CreateCategoryDto createCategoryDto){
+//
+//        User user = authService.getUserFromToken(authHeader);
+//
+//        if(user.getRole()!= Role.ADMIN){
+//            throw new InvalidCredentialsException("Unauthorized");
+//        }
+//        System.out.println(user);
+//        return categoryService.createCategory(createCategoryDto,user);
+//    }
+
     @PostMapping
     public CategoryResponseDto createResponseDto(
-            @RequestHeader("Authorization") String authHeader,
             @Valid @RequestBody CreateCategoryDto createCategoryDto){
 
-        User user = authService.getUserFromToken(authHeader);
+        User user = null;
 
-        if(user.getRole()!= Role.ADMIN){
-            throw new InvalidCredentialsException("Unauthorized");
-        }
-        System.out.println(user);
+
         return categoryService.createCategory(createCategoryDto,user);
     }
 

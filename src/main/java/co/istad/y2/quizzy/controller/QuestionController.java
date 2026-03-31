@@ -27,34 +27,31 @@ public class QuestionController {
         this.authService = authService;
     }
 
+//    @PostMapping
+//    public QuestionResponseDto createQuestion(
+//            @RequestHeader("Authorization") String authHeader,
+//            @RequestBody CreateQuestionDto createQuestionDto ){
+//
+//        User user = authService.getUserFromToken(authHeader);
+//        return questionService.createQuestion(createQuestionDto,user);
+//    }
     @PostMapping
     public QuestionResponseDto createQuestion(
-            @RequestHeader("Authorization") String authHeader,
             @RequestBody CreateQuestionDto createQuestionDto ){
-
-        User user = authService.getUserFromToken(authHeader);
+        User user = null;
         return questionService.createQuestion(createQuestionDto,user);
     }
+
 
     @GetMapping()
     public List<QuestionResponseDto> getQuestions(){
         return questionService.getAllQuestions();
     }
 
-    @GetMapping("/{id}")
-    public QuestionResponseDto getQuestionById(@PathVariable Long id){
-        return questionService.getQuestionById(id);
-    }
-
-
-    @GetMapping("/category/{categoryId}")
-    public List<QuestionResponseDto> getQuestionsByCategory(@PathVariable Long categoryId){
-        return questionService.getQuestionsByCategory(categoryId);
-    }
 
     @PutMapping("/{id}")
     public QuestionResponseDto updateQuestion(@PathVariable Long id,
-                                              @RequestBody UpdateQuestionDto updateQuestionDto,@RequestParam Long userId){
+                                               @RequestBody UpdateQuestionDto updateQuestionDto,@RequestParam Long userId){
 
         log.info("Id : " + id + " | updateQuestionDto : " + updateQuestionDto);
         return questionService.updateQuestion(id,updateQuestionDto);

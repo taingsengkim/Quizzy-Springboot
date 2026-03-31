@@ -1,6 +1,7 @@
 package co.istad.y2.quizzy.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,24 +19,12 @@ public class Question extends BaseEntity{
 
     private String text;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;
-
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
 
 
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
     private Integer points;
-    private String difficulty;
+    private Difficulty difficulty;
 
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL , orphanRemoval = true)
@@ -43,6 +32,7 @@ public class Question extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "quiz_id")
+    @JsonIgnore
     private Quiz quiz;
 }
 

@@ -1,5 +1,6 @@
 package co.istad.y2.quizzy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,11 +22,18 @@ public class Category extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
-    private List<Question> questions = new ArrayList<>();
+//    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Question> questions = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Quiz> quizzes;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
+    @JsonIgnore
     private User createdBy;
 
 }

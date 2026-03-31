@@ -2,6 +2,7 @@ package co.istad.y2.quizzy.service;
 
 import co.istad.y2.quizzy.dto.quiz.QuizCreateDto;
 import co.istad.y2.quizzy.model.Answer;
+import co.istad.y2.quizzy.model.Difficulty;
 import co.istad.y2.quizzy.model.Question;
 import co.istad.y2.quizzy.model.Quiz;
 import co.istad.y2.quizzy.repository.CategoryRepository;
@@ -30,6 +31,7 @@ public class QuizServiceImpl implements QuizService{
     @Override
     @Transactional
     public Quiz createQuiz(QuizCreateDto quizDto) {
+        System.out.println(quizDto);
         Quiz quiz = new Quiz();
         quiz.setTitle(quizDto.title());
         quiz.setDescription(quizDto.description());
@@ -44,7 +46,7 @@ public class QuizServiceImpl implements QuizService{
                 q.setText(qDto.text());
                 q.setQuestionType(qDto.questionType());
                 q.setPoints(qDto.points());
-                q.setDifficulty(qDto.difficulty());
+                q.setDifficulty(Difficulty.valueOf(qDto.difficulty()));
 
                 // Map answers
                 if (qDto.answers() != null) {
@@ -83,7 +85,7 @@ public class QuizServiceImpl implements QuizService{
 
     @Override
     public List<Quiz> findAll() {
-        return List.of();
+        return quizRepository.findAllWithQuestions();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package co.istad.y2.quizzy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class User extends BaseEntity{
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     private String avatar;

@@ -35,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
                 map(c->new ListCategoryResponseDto(
                 c.getId(),
                 c.getName(),
-                c.getQuestions().size()
+                c.getQuizzes().size()
         )).collect(Collectors.toList());
     }
 

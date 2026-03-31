@@ -54,17 +54,19 @@ public class QuizServiceResultImpl implements QuizServiceResult {
             return new QuizResultResponseDto(score,total);
     }
 
-    @Override
-    public List<QuizQuestionsDto> getQuizByCategory(Long categoryId) {
-       List<Question> questions = questionRepository.findByCategoryId(categoryId);
+//    @Override
+//    public List<QuizQuestionsDto> getQuizByCategory(Long categoryId) {
+//       List<Question> questions = questionRepository.findByCategoryId(categoryId);
+//
+//        return questions.stream().map(
+//                q-> new QuizQuestionsDto(
+//                    q.getId(),
+//                        q.getText(),
+//                        q.getAnswers().stream()
+//                                .map(a->new QuizAnswerDto(a.getId(),a.getText())).toList()
+//                )
+//        ).toList();
+//    }
 
-        return questions.stream().map(
-                q-> new QuizQuestionsDto(
-                    q.getId(),
-                        q.getText(),
-                        q.getAnswers().stream()
-                                .map(a->new QuizAnswerDto(a.getId(),a.getText())).toList()
-                )
-        ).toList();
-    }
+
 }

@@ -18,12 +18,15 @@ public class QuizController {
         this.quizService = quizService;
     }
 
-    // Create a new quiz
     @PostMapping
-    public ResponseEntity<Quiz> createQuiz(@RequestBody QuizCreateDto quizCreateDto) {
+    public Quiz createQuiz(@RequestBody QuizCreateDto quizCreateDto) {
         Quiz createdQuiz = quizService.createQuiz(quizCreateDto);
-        return ResponseEntity.ok(createdQuiz);
+        return createdQuiz;
     }
+
+
+
+
 
 //    // Update existing quiz
 //    @PutMapping("/{id}")
@@ -40,13 +43,13 @@ public class QuizController {
 //        return ResponseEntity.noContent().build();
 //    }
 //
-//    // Get all quizzes
-//    @GetMapping
-//    public ResponseEntity<List<Quiz>> getAllQuizzes() {
-//        List<Quiz> quizzes = quizService.findAll();
-//        return ResponseEntity.ok(quizzes);
-//    }
-//
+    // Get all quizzes
+    @GetMapping
+    public ResponseEntity<List<Quiz>> getAllQuizzes() {
+        List<Quiz> quizzes = quizService.findAll();
+        return ResponseEntity.ok(quizzes);
+    }
+
 //    // Get quiz by id
 //    @GetMapping("/{id}")
 //    public ResponseEntity<Quiz> getQuizById(@PathVariable Long id) {

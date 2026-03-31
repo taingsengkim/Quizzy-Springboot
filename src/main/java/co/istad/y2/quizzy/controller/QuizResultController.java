@@ -35,9 +35,9 @@ public class QuizResultController {
     }
 
 
-    @GetMapping
-    public List<QuizQuestionsDto> getQuiz(@RequestParam(name="category_id") Long categoryId){
-        return quizServiceResult.getQuizByCategory(categoryId);
-    }
+//    @GetMapping
+//    public List<QuizQuestionsDto> getQuiz(@RequestParam(name="category_id") Long categoryId){
+//        return quizServiceResult.getQuizByCategory(categoryId);
+//    }
 
 }

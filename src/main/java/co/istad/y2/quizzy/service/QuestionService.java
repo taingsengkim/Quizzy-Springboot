@@ -18,11 +18,11 @@ public interface QuestionService {
 
     List<QuestionResponseDto> getAllQuestions();
 
-    List<QuestionResponseDto> getQuestionsByCategory(Long categoryId);
+//    List<QuestionResponseDto> getQuestionsByCategory(Long categoryId);
 
     QuestionResponseDto updateQuestion(Long id, UpdateQuestionDto dto);
 
     void deleteQuestion(Long id);
 
-    QuestionResponseDto getQuestionById(Long id);
+//    QuestionResponseDto getQuestionById(Long id);
 }
