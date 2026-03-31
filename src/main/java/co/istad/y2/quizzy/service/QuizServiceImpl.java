@@ -1,71 +1,93 @@
 package co.istad.y2.quizzy.service;
 
-import co.istad.y2.quizzy.dto.quiz.*;
-import co.istad.y2.quizzy.exception.question.QuestionNotFoundException;
-import co.istad.y2.quizzy.model.*;
+import co.istad.y2.quizzy.dto.quiz.QuizCreateDto;
+import co.istad.y2.quizzy.model.Answer;
+import co.istad.y2.quizzy.model.Question;
+import co.istad.y2.quizzy.model.Quiz;
+import co.istad.y2.quizzy.repository.CategoryRepository;
 import co.istad.y2.quizzy.repository.QuestionRepository;
-import co.istad.y2.quizzy.repository.QuizResultRepository;
-import co.istad.y2.quizzy.repository.UserAnswerRepository;
+import co.istad.y2.quizzy.repository.QuizRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import java.util.Optional;
 
 @Service
 public class QuizServiceImpl implements QuizService{
+    private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
-    private final QuizResultRepository quizResultRepository;
-    public QuizServiceImpl(
-            QuestionRepository questionRepository,
-            QuizResultRepository quizResultRepository
-    ){
+    private final CategoryRepository categoryRepository;
+    public QuizServiceImpl(QuizRepository quizRepository,
+                           QuestionRepository questionRepository,
+                           CategoryRepository categoryRepository){
+        this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
-        this.quizResultRepository = quizResultRepository;
+        this.categoryRepository = categoryRepository;
     }
 
+
     @Override
-    public QuizResultResponseDto submitQuiz(SubmitQuizDto submitQuizDto, User user) {
-        int score = 0 ;
-        int total = submitQuizDto.answers().size();
-
-        for(SubmitAnswerDto submitAnswerDto : submitQuizDto.answers()) {
-            Question question = questionRepository.findById(submitAnswerDto.questionId())
-                    .orElseThrow(() -> new QuestionNotFoundException("Question Not Found!"));
-
-            Set<Long> correctId = question.getAnswers().stream()
-                    .filter(Answer::isCorrect)
-                    .map(Answer::getId)
-                    .collect(Collectors.toSet());
-
-            Set<Long> userIds = new HashSet<>(submitAnswerDto.answerId());
-
-            if (correctId.equals(userIds)) {
-                score++;
-            }
+    @Transactional
+    public Quiz createQuiz(QuizCreateDto quizDto) {
+        Quiz quiz = new Quiz();
+        quiz.setTitle(quizDto.title());
+        quiz.setDescription(quizDto.description());
+        quiz.setDuration(quizDto.duration());
+        if (quizDto.categoryId() != null) {
+            categoryRepository.findById(quizDto.categoryId())
+                    .ifPresent(quiz::setCategory);
         }
-            QuizResult result = new QuizResult();
-            result.setUser(user);
-            result.setScore(score);
-            result.setTotal(total);
+        if (quizDto.questions() != null) {
+            List<Question> questionList = quizDto.questions().stream().map(qDto -> {
+                Question q = new Question();
+                q.setText(qDto.text());
+                q.setQuestionType(qDto.questionType());
+                q.setPoints(qDto.points());
+                q.setDifficulty(qDto.difficulty());
 
-            quizResultRepository.save(result);
-            return new QuizResultResponseDto(score,total);
+                // Map answers
+                if (qDto.answers() != null) {
+                    List<Answer> answers = qDto.answers().stream().map(aDto -> {
+                        Answer a = new Answer();
+                        a.setText(aDto.text());
+                        a.setCorrect(aDto.correct());
+                        a.setQuestion(q); // link answer to question
+                        return a;
+                    }).toList();
+                    q.setAnswers(answers);
+                }
+                q.setQuiz(quiz); // link question to quiz
+                return q;
+            }).toList();
+
+            quiz.setQuestions(questionList);
+        }
+        return quizRepository.save(quiz);
     }
 
     @Override
-    public List<QuizQuestionsDto> getQuizByCategory(Long categoryId) {
-       List<Question> questions = questionRepository.findByCategoryId(categoryId);
+    public Quiz updateQuiz(Long id, Quiz quiz) {
+        return null;
+    }
 
-        return questions.stream().map(
-                q-> new QuizQuestionsDto(
-                    q.getId(),
-                        q.getText(),
-                        q.getAnswers().stream()
-                                .map(a->new QuizAnswerDto(a.getId(),a.getText())).toList()
-                )
-        ).toList();
+    @Override
+    public void deleteQuiz(Long id) {
+
+    }
+
+    @Override
+    public Optional<Quiz> findById(Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Quiz> findAll() {
+        return List.of();
+    }
+
+    @Override
+    public List<Quiz> findByCategory(Long categoryId) {
+        return List.of();
     }
 }

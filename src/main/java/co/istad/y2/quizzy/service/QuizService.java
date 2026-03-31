@@ -1,19 +1,18 @@
 package co.istad.y2.quizzy.service;
 
-import co.istad.y2.quizzy.dto.quiz.QuizQuestionsDto;
-import co.istad.y2.quizzy.dto.quiz.QuizResultResponseDto;
-import co.istad.y2.quizzy.dto.quiz.SubmitQuizDto;
-import co.istad.y2.quizzy.model.Question;
-import co.istad.y2.quizzy.model.User;
-import co.istad.y2.quizzy.repository.QuizResultRepository;
+import co.istad.y2.quizzy.dto.quiz.QuizCreateDto;
+import co.istad.y2.quizzy.model.Quiz;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 
 public interface QuizService {
-
-
-
-    QuizResultResponseDto submitQuiz(SubmitQuizDto submitQuizDto, User user);
-
-    List<QuizQuestionsDto> getQuizByCategory(Long categoryId);
+    Quiz createQuiz(QuizCreateDto quizCreateDto);
+    Quiz updateQuiz(Long id, Quiz quiz);
+    void deleteQuiz(Long id);
+    Optional<Quiz> findById(Long id);
+    List<Quiz> findAll();
+    List<Quiz> findByCategory(Long categoryId);
 }

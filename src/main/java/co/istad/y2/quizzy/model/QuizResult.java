@@ -19,8 +19,12 @@ public class QuizResult {
     @ManyToOne
     private User user;
 
-    private int score;
-    private int total;
+    @ManyToOne
+    private Quiz quiz;
+
+    private Integer score;
+    private Integer total;
+    private Long duration;
 
     private Instant created= Instant.now();
 

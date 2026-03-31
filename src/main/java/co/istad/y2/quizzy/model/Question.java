@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Setter
 @Getter
-public class Question {
+public class Question extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +32,17 @@ public class Question {
     private Category category;
 
 
+    @Enumerated(EnumType.STRING)
+    private QuestionType questionType;
+    private Integer points;
+    private String difficulty;
+
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL , orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
 }
 

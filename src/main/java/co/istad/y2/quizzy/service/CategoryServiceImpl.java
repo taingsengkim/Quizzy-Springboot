@@ -6,6 +6,7 @@ import co.istad.y2.quizzy.dto.category.CreateCategoryDto;
 import co.istad.y2.quizzy.dto.category.ListCategoryResponseDto;
 import co.istad.y2.quizzy.dto.category.UpdateCategoryDto;
 import co.istad.y2.quizzy.model.Category;
+import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,11 @@ public class CategoryServiceImpl implements CategoryService {
         this.categoryRepository = categoryRepository;
     }
     @Override
-    public CategoryResponseDto createCategory(CreateCategoryDto createCategoryDto){
+    public CategoryResponseDto createCategory(CreateCategoryDto createCategoryDto, User user){
         Category category = new Category();
         category.setName(createCategoryDto.name());
+        category.setCreatedBy(user);
+
         Category saved = categoryRepository.save(category);
         return new CategoryResponseDto(saved.getId(),saved.getName());
     }

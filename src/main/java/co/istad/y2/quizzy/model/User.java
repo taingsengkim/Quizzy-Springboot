@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,6 +27,15 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }

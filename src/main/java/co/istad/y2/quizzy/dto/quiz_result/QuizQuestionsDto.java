@@ -1,6 +1,4 @@
-package co.istad.y2.quizzy.dto.quiz;
-
-import co.istad.y2.quizzy.model.Answer;
+package co.istad.y2.quizzy.dto.quiz_result;
 
 import java.util.List;
 

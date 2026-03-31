@@ -34,9 +34,9 @@ public class JwtUtil {
     // Extract email from token
     public String extractEmail(String token) {
         Claims claims = Jwts.parser()        // create a parser builder
-                .setSigningKey(getKey())           // set signing key
-                .build()                           // build the parser
-                .parseClaimsJws(token)            // parse the JWT
+                .setSigningKey(getKey())     // set signing key
+                .build()                     // build the parser
+                .parseClaimsJws(token)       // parse the JWT
                 .getBody();
 
         return claims.getSubject();

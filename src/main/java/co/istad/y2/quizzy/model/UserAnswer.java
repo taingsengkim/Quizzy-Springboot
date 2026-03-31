@@ -23,7 +23,7 @@ public class UserAnswer {
     @ManyToOne
     private Question question;
 
-    @ManyToOne
-    private Answer selectedAnswers;
+    @ManyToMany
+    private List<Answer> selectedAnswers;
 
 }
