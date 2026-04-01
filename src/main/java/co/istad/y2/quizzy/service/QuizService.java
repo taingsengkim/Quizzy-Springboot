@@ -14,7 +14,7 @@ public interface QuizService {
     QuizResponseDto createQuiz(QuizCreateDto quizCreateDto);
     Quiz updateQuiz(Long id, Quiz quiz);
     void deleteQuiz(Long id);
-    Optional<Quiz> findById(Long id);
+    QuizResponseDto findById(Long id);
     List<QuizResponseDto> findAll();
     List<Quiz> findByCategory(Long categoryId);
 }

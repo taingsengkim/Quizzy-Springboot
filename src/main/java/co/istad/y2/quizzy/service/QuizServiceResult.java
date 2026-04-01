@@ -13,5 +13,6 @@ public interface QuizServiceResult {
 
     QuizResultResponseDto submitQuiz(SubmitQuizDto submitQuizDto, User user);
 
+
 //    List<QuizQuestionsDto> getQuizByCategory(Long categoryId);
 }

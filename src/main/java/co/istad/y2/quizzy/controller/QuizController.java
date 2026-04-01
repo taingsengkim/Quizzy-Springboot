@@ -36,24 +36,22 @@ public class QuizController {
 //        return ResponseEntity.ok(updatedQuiz);
 //    }
 //
-//    // Delete quiz
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteQuiz(@PathVariable Long id) {
-//        quizService.deleteQuiz(id);
-//        return ResponseEntity.noContent().build();
-//    }
-//
+    // Delete quiz
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteQuiz(@PathVariable Long id) {
+        quizService.deleteQuiz(id);
+        return ResponseEntity.noContent().build();
+    }
+
     // Get all quizzes
     @GetMapping
     public List<QuizResponseDto> getAllQuizzes() {
         return quizService.findAll();
     }
 
-//    // Get quiz by id
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Quiz> getQuizById(@PathVariable Long id) {
-//        return quizService.findById(id)
-//                .map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
-//    }
+    // Get quiz by id
+    @GetMapping("/{id}")
+    public QuizResponseDto getQuizById(@PathVariable Long id) {
+        return quizService.findById(id);
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -35,4 +36,15 @@ public class AppGlobalException {
                 .build();
     }
 
+
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ResponseStatusException.class)
+    public RestErrorResponse handleResponseStatusException(ResponseStatusException e) {
+        return buildError(
+                HttpStatus.valueOf(e.getStatusCode().value()),
+                e.getReason(),
+                e.getMessage()
+        );
+    }
 }

@@ -11,7 +11,9 @@ import co.istad.y2.quizzy.repository.CategoryRepository;
 import co.istad.y2.quizzy.repository.QuestionRepository;
 import co.istad.y2.quizzy.repository.QuizRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,14 +82,17 @@ public class QuizServiceImpl implements QuizService{
         return null;
     }
 
+
     @Override
     public void deleteQuiz(Long id) {
-
+        Quiz quiz = quizRepository.findById(id).
+                orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Quiz Not Found!"));
+        quizRepository.delete(quiz);
     }
 
     @Override
-    public Optional<Quiz> findById(Long id) {
-        return Optional.empty();
+    public QuizResponseDto findById(Long id) {
+        return quizMapper.mapToResponse(quizRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Quiz Not Found!")));
     }
 
     @Override

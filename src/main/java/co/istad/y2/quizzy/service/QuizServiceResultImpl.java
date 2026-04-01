@@ -3,6 +3,7 @@ package co.istad.y2.quizzy.service;
 import co.istad.y2.quizzy.dto.quiz_result.*;
 import co.istad.y2.quizzy.model.*;
 import co.istad.y2.quizzy.repository.QuestionRepository;
+import co.istad.y2.quizzy.repository.QuizRepository;
 import co.istad.y2.quizzy.repository.QuizResultRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,11 @@ import java.util.stream.Collectors;
 public class QuizServiceResultImpl implements QuizServiceResult {
     private final QuestionRepository questionRepository;
     private final QuizResultRepository quizResultRepository;
+
     public QuizServiceResultImpl(
             QuestionRepository questionRepository,
-            QuizResultRepository quizResultRepository
-    ){
+            QuizResultRepository quizResultRepository,
+            QuizRepository quizRepository){
         this.questionRepository = questionRepository;
         this.quizResultRepository = quizResultRepository;
     }
@@ -54,6 +56,7 @@ public class QuizServiceResultImpl implements QuizServiceResult {
             quizResultRepository.save(result);
             return new QuizResultResponseDto(score,total);
     }
+
 
 //    @Override
 //    public List<QuizQuestionsDto> getQuizByCategory(Long categoryId) {
