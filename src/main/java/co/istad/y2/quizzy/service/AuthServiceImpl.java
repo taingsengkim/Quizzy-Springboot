@@ -4,13 +4,10 @@ import co.istad.y2.quizzy.dto.auth.LoginDto;
 import co.istad.y2.quizzy.dto.auth.RegisterDto;
 import co.istad.y2.quizzy.dto.auth.UserResponseDto;
 import co.istad.y2.quizzy.jwt.JwtUtil;
-import co.istad.y2.quizzy.model.Role;
 import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -34,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = new User();
-        user.setRole(Role.ADMIN);
+//        user.setRole(Role.ADMIN);
         user.setEmail(dto.email());
         user.setPassword(dto.password());
         user.setUsername(dto.username());

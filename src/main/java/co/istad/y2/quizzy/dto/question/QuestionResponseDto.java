@@ -11,7 +11,7 @@ import java.util.List;
 public record QuestionResponseDto(
         Long id,
         String text,
-        Long quizId,
+//        Long quizId,
         List<AnswerResponseDto> answers,
         QuestionType questionType,
         Integer points,

@@ -1,6 +1,8 @@
 package co.istad.y2.quizzy.service;
 
 import co.istad.y2.quizzy.dto.quiz.QuizCreateDto;
+import co.istad.y2.quizzy.dto.quiz.QuizResponseDto;
+import co.istad.y2.quizzy.mapper.QuizMapper;
 import co.istad.y2.quizzy.model.Answer;
 import co.istad.y2.quizzy.model.Difficulty;
 import co.istad.y2.quizzy.model.Question;
@@ -13,24 +15,28 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class QuizServiceImpl implements QuizService{
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
     private final CategoryRepository categoryRepository;
+    private final QuizMapper quizMapper;
     public QuizServiceImpl(QuizRepository quizRepository,
                            QuestionRepository questionRepository,
-                           CategoryRepository categoryRepository){
+                           CategoryRepository categoryRepository,
+                           QuizMapper quizMapper){
         this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
         this.categoryRepository = categoryRepository;
+        this.quizMapper = quizMapper;
     }
 
 
     @Override
     @Transactional
-    public Quiz createQuiz(QuizCreateDto quizDto) {
+    public QuizResponseDto createQuiz(QuizCreateDto quizDto) {
         System.out.println(quizDto);
         Quiz quiz = new Quiz();
         quiz.setTitle(quizDto.title());
@@ -65,7 +71,8 @@ public class QuizServiceImpl implements QuizService{
 
             quiz.setQuestions(questionList);
         }
-        return quizRepository.save(quiz);
+        Quiz save = quizRepository.save(quiz);
+        return quizMapper.mapToResponse(save);
     }
 
     @Override
@@ -84,8 +91,9 @@ public class QuizServiceImpl implements QuizService{
     }
 
     @Override
-    public List<Quiz> findAll() {
-        return quizRepository.findAllWithQuestions();
+    public List<QuizResponseDto> findAll() {
+        return quizRepository.findAllWithQuestions().stream()
+                .map(quizMapper::mapToResponse).collect(Collectors.toList());
     }
 
     @Override

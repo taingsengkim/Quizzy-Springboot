@@ -1,6 +1,7 @@
 package co.istad.y2.quizzy.controller;
 
 import co.istad.y2.quizzy.dto.quiz.QuizCreateDto;
+import co.istad.y2.quizzy.dto.quiz.QuizResponseDto;
 import co.istad.y2.quizzy.model.Quiz;
 import co.istad.y2.quizzy.service.QuizService;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,8 @@ public class QuizController {
     }
 
     @PostMapping
-    public Quiz createQuiz(@RequestBody QuizCreateDto quizCreateDto) {
-        Quiz createdQuiz = quizService.createQuiz(quizCreateDto);
-        return createdQuiz;
+    public QuizResponseDto createQuiz(@RequestBody QuizCreateDto quizCreateDto) {
+        return quizService.createQuiz(quizCreateDto);
     }
 
 
@@ -45,9 +45,8 @@ public class QuizController {
 //
     // Get all quizzes
     @GetMapping
-    public ResponseEntity<List<Quiz>> getAllQuizzes() {
-        List<Quiz> quizzes = quizService.findAll();
-        return ResponseEntity.ok(quizzes);
+    public List<QuizResponseDto> getAllQuizzes() {
+        return quizService.findAll();
     }
 
 //    // Get quiz by id

@@ -26,8 +26,7 @@ public class User extends BaseEntity{
 
     private String avatar;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+//    private Role role;
 
     @Override
     public String toString() {
@@ -37,7 +36,7 @@ public class User extends BaseEntity{
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", avatar='" + avatar + '\'' +
-                ", role=" + role +
+//                ", role=" + role +
                 '}';
     }
 }

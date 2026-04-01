@@ -50,12 +50,12 @@ public class QuestionController {
     }
 
 
-    @PutMapping("/{id}")
-    public QuestionResponseDto updateQuestion(@PathVariable Long id,
+    @PutMapping
+    public QuestionResponseDto updateQuestion(
                                                @RequestBody UpdateQuestionDto updateQuestionDto){
 
-        log.info("Id : " + id + " | updateQuestionDto : " + updateQuestionDto);
-        return questionService.updateQuestion(id,updateQuestionDto);
+        log.info( " updateQuestionDto : " + updateQuestionDto);
+        return questionService.updateQuestion(updateQuestionDto);
     }
 
     @DeleteMapping("/{id}")

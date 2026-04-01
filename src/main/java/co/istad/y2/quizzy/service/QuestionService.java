@@ -20,7 +20,7 @@ public interface QuestionService {
 
 //    List<QuestionResponseDto> getQuestionsByCategory(Long categoryId);
 
-    QuestionResponseDto updateQuestion(Long id, UpdateQuestionDto dto);
+    QuestionResponseDto updateQuestion( UpdateQuestionDto dto);
 
     void deleteQuestion(Long id);
 
