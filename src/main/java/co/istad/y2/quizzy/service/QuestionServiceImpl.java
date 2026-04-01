@@ -4,7 +4,6 @@ import co.istad.y2.quizzy.dto.answer.AnswerResponseDto;
 import co.istad.y2.quizzy.dto.question.CreateQuestionDto;
 import co.istad.y2.quizzy.dto.question.QuestionResponseDto;
 import co.istad.y2.quizzy.dto.question.UpdateQuestionDto;
-import co.istad.y2.quizzy.exception.question.QuestionNotFoundException;
 import co.istad.y2.quizzy.model.*;
 import co.istad.y2.quizzy.repository.AnswerRepository;
 import co.istad.y2.quizzy.repository.QuestionRepository;

@@ -4,15 +4,11 @@ import co.istad.y2.quizzy.dto.category.CategoryResponseDto;
 import co.istad.y2.quizzy.dto.category.CreateCategoryDto;
 import co.istad.y2.quizzy.dto.category.ListCategoryResponseDto;
 import co.istad.y2.quizzy.dto.category.UpdateCategoryDto;
-import co.istad.y2.quizzy.exception.user.InvalidCredentialsException;
-import co.istad.y2.quizzy.model.Role;
 import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.service.AuthService;
 import co.istad.y2.quizzy.service.CategoryService;
-import co.istad.y2.quizzy.service.CategoryServiceImpl;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

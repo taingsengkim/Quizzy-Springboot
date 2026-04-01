@@ -1,11 +1,6 @@
 package co.istad.y2.quizzy.exception;
 
 
-import co.istad.y2.quizzy.exception.question.QuestionNotFoundException;
-import co.istad.y2.quizzy.exception.user.EmailAlreadyExist;
-import co.istad.y2.quizzy.exception.user.InvalidCredentialsException;
-import co.istad.y2.quizzy.exception.user.UserNotFound;
-import co.istad.y2.quizzy.exception.user.UsernameAlreadyExist;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,7 +22,7 @@ public class AppGlobalException {
             fields.add(new FieldResponse(fieldError.getField(),fieldError.getDefaultMessage()));
         });
 
-        return buildError(HttpStatus.BAD_REQUEST,"Requested data is invalid", e.getMessage());
+        return buildError(HttpStatus.BAD_REQUEST,"Requested data is invalid", fields);
     }
 
     private RestErrorResponse buildError(HttpStatus status, String message, Object details) {
@@ -38,22 +33,6 @@ public class AppGlobalException {
                 .timestamp(Instant.now())
                 .errorDetails(details)
                 .build();
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({EmailAlreadyExist.class,
-            UsernameAlreadyExist.class,
-            UserNotFound.class,
-            QuestionNotFoundException.class
-    })
-    public RestErrorResponse handleEmailDuplicate(Exception e){
-       return buildError(HttpStatus.BAD_REQUEST,"Invalid Data Request", e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(InvalidCredentialsException.class)
-    public RestErrorResponse handleInvalidCredentials(InvalidCredentialsException e){
-        return buildError(HttpStatus.BAD_REQUEST,"Authentication Failed", e.getMessage());
     }
 
 }

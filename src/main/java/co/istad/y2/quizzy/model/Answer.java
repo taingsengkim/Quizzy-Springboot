@@ -3,6 +3,7 @@ package co.istad.y2.quizzy.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +18,7 @@ public class Answer extends BaseEntity {
     @Column(nullable = false)
     private String text;
 
-
+    @NotNull
     private boolean correct;
 
     @ManyToOne

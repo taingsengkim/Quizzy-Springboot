@@ -1,11 +1,12 @@
 package co.istad.y2.quizzy.service;
 
 import co.istad.y2.quizzy.dto.quiz_result.*;
-import co.istad.y2.quizzy.exception.question.QuestionNotFoundException;
 import co.istad.y2.quizzy.model.*;
 import co.istad.y2.quizzy.repository.QuestionRepository;
 import co.istad.y2.quizzy.repository.QuizResultRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +33,7 @@ public class QuizServiceResultImpl implements QuizServiceResult {
 
         for(SubmitAnswerDto submitAnswerDto : submitQuizDto.answers()) {
             Question question = questionRepository.findById(submitAnswerDto.questionId())
-                    .orElseThrow(() -> new QuestionNotFoundException("Question Not Found!"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Question Not Found!"));
 
             Set<Long> correctId = question.getAnswers().stream()
                     .filter(Answer::isCorrect)
