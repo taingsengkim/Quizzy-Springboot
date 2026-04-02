@@ -12,6 +12,9 @@ public record RegisterDto (
         String email,
         @NotBlank
         @Size(max = 150)
-        String password
+        String password,
+        @NotBlank
+        @Size(max = 20)
+        String role
 ){
 }

@@ -26,10 +26,6 @@ public class QuizController {
         return quizService.createQuiz(quizCreateDto);
     }
 
-
-
-
-
     // Update existing quiz
     @PatchMapping("/{id}")
     public QuizResponseDto updateQuiz(@PathVariable Long id,

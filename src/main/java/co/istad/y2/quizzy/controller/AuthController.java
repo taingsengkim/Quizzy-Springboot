@@ -4,13 +4,18 @@ import co.istad.y2.quizzy.dto.auth.LoginDto;
 import co.istad.y2.quizzy.dto.auth.RegisterDto;
 import co.istad.y2.quizzy.dto.auth.UserResponseDto;
 import co.istad.y2.quizzy.model.User;
+import co.istad.y2.quizzy.model.UserStatus;
 import co.istad.y2.quizzy.service.AuthService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -31,6 +36,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public User register(@Valid @RequestBody RegisterDto dto){
+        log.info("Register: {}",dto);
         return authService.register(dto);
     }
 
@@ -39,4 +45,17 @@ public class AuthController {
         String token = authService.login(dto);
         return Map.of("token",token);
     }
+    @GetMapping("/pending-instructors")
+    public List<UserResponseDto> getPendingInstructors() {
+        return authService.findAll().stream()
+                .filter(u -> u.role().stream().anyMatch(r -> r.getName().equalsIgnoreCase("INSTRUCTOR")))
+                .filter(u -> u.status() == UserStatus.PENDING)
+                .toList();
+    }
+
+    @PostMapping("/approve-instructor/{id}")
+    public User approveInstructor(@PathVariable Long id){
+        return authService.approveRole(id);
+    }
+
 }

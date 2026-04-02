@@ -18,4 +18,7 @@ public interface AuthService {
      User getUserFromToken(String authHeader);
 
      UserResponseDto getUserDetail(Long id);
+
+     User approveRole(Long id);
+
 }

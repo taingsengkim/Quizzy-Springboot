@@ -12,5 +12,7 @@ public record LoginDto(
         @NotBlank
         @Size(max = 150)
         String password
+
+
 ) {
 }
