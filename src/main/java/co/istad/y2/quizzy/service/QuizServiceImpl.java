@@ -1,11 +1,13 @@
 package co.istad.y2.quizzy.service;
 
 import co.istad.y2.quizzy.dto.answer.AnswerPlayDto;
+import co.istad.y2.quizzy.dto.category.CategoryResponseDto;
 import co.istad.y2.quizzy.dto.question.QuestionPlayDto;
 import co.istad.y2.quizzy.dto.quiz.QuizCreateDto;
 import co.istad.y2.quizzy.dto.quiz.QuizPlayResponseDto;
 import co.istad.y2.quizzy.dto.quiz.QuizResponseDto;
 import co.istad.y2.quizzy.dto.quiz.QuizUpdateDto;
+import co.istad.y2.quizzy.mapper.CategoryMapper;
 import co.istad.y2.quizzy.mapper.QuizMapper;
 import co.istad.y2.quizzy.model.*;
 import co.istad.y2.quizzy.repository.CategoryRepository;
@@ -26,14 +28,17 @@ public class QuizServiceImpl implements QuizService{
     private final QuestionRepository questionRepository;
     private final CategoryRepository categoryRepository;
     private final QuizMapper quizMapper;
+    private final CategoryMapper categoryMapper;
+
     public QuizServiceImpl(QuizRepository quizRepository,
                            QuestionRepository questionRepository,
                            CategoryRepository categoryRepository,
-                           QuizMapper quizMapper){
+                           QuizMapper quizMapper, CategoryMapper categoryMapper){
         this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
         this.categoryRepository = categoryRepository;
         this.quizMapper = quizMapper;
+        this.categoryMapper = categoryMapper;
     }
 
 
@@ -142,7 +147,30 @@ public class QuizServiceImpl implements QuizService{
     }
 
     @Override
-    public List<Quiz> findByCategory(Long categoryId) {
-        return List.of();
+    public List<QuizPlayResponseDto> findByCategoryId(Long categoryId) {
+        CategoryResponseDto category = categoryMapper.mapToResponse(categoryRepository.findById(categoryId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found!")));
+
+        List<Quiz> quizzes = quizRepository.findByCategoryId(categoryId);
+        List<QuizPlayResponseDto> quizDtos = quizzes.stream()
+                .map(quiz ->
+                        new QuizPlayResponseDto(
+                            quiz.getId(),
+                                quiz.getTitle(),
+                                quiz.getQuestions().stream().map(q ->
+                                        new QuestionPlayDto(
+                                                q.getId(),
+                                                q.getText(),
+                                                q.getAnswers().stream()
+                                                        .map(a -> new AnswerPlayDto(a.getId(), a.getText()))
+                                                        .toList(),
+                                                q.getQuestionType().name(),
+                                                q.getPoints()
+                                        )
+                        ).toList()
+                )).toList();
+
+        return quizDtos;
     }
+
+
 }

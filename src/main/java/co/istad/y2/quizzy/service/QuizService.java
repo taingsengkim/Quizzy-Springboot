@@ -19,7 +19,5 @@ public interface QuizService {
     QuizResponseDto findById(Long id);
     List<QuizResponseDto> findAll();
     QuizPlayResponseDto getQuizForPlay(Long quizId);
-
-
-    List<Quiz> findByCategory(Long categoryId);
+    List<QuizPlayResponseDto> findByCategoryId(Long categoryId);
 }

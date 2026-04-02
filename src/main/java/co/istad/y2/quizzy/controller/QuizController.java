@@ -53,6 +53,13 @@ public class QuizController {
         return quizService.findById(id);
     }
 
+
+    @GetMapping("/categories/{id}")
+    public List<QuizPlayResponseDto> getQuizByCategory(@PathVariable Long id) {
+        return quizService.findByCategoryId(id);
+    }
+
+
     //play quiz
     @GetMapping("/{id}/play")
     public QuizPlayResponseDto playQuiz(@PathVariable Long id) {
