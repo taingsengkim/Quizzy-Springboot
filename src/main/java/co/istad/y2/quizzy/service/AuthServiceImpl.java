@@ -115,4 +115,9 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.save(user);
     }
 
+    @Override
+    public List<Role> getAllRole() {
+        return roleRepository.findAll();
+    }
+
 }
