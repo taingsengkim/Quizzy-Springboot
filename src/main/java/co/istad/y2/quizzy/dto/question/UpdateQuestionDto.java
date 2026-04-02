@@ -13,9 +13,6 @@ public record UpdateQuestionDto(
         @Size(max = 500, message = "Question text must be less than 500 characters")
         String text,
 
-        @NotNull(message = "Quiz ID is required")
-        Long quizId,
-
         @NotNull(message = "Question type is required")
         QuestionType questionType,
 

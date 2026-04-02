@@ -79,9 +79,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionResponseDto updateQuestion( UpdateQuestionDto dto) {
-        Question question = questionRepository.findById(dto.quizId())
-                .orElseThrow(() -> new ResponseStatusException( HttpStatus.NOT_FOUND,"Question Not Found!"));
+    public QuestionResponseDto updateQuestion(Long id, UpdateQuestionDto dto) {
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question Not Found!"));
         if (dto.text() != null) question.setText(dto.text());
         if (dto.questionType() != null) question.setQuestionType(dto.questionType());
         if (dto.points() != null) question.setPoints(dto.points());
