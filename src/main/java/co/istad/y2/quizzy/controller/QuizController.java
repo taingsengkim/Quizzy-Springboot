@@ -6,6 +6,7 @@ import co.istad.y2.quizzy.dto.quiz.QuizResponseDto;
 import co.istad.y2.quizzy.dto.quiz.QuizUpdateDto;
 import co.istad.y2.quizzy.model.Quiz;
 import co.istad.y2.quizzy.service.QuizService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,14 +23,14 @@ public class QuizController {
     }
 
     @PostMapping
-    public QuizResponseDto createQuiz(@RequestBody QuizCreateDto quizCreateDto) {
+    public QuizResponseDto createQuiz( @Valid  @RequestBody QuizCreateDto quizCreateDto) {
         return quizService.createQuiz(quizCreateDto);
     }
 
     // Update existing quiz
     @PatchMapping("/{id}")
     public QuizResponseDto updateQuiz(@PathVariable Long id,
-                                           @RequestBody QuizUpdateDto quizUpdateDto) {
+                                      @Valid @RequestBody QuizUpdateDto quizUpdateDto) {
         return quizService.updateQuiz(id, quizUpdateDto);
     }
 

@@ -8,6 +8,7 @@ import co.istad.y2.quizzy.jwt.JwtUtil;
 import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.service.AuthService;
 import co.istad.y2.quizzy.service.QuestionServiceImpl;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class QuestionController {
 //    }
     @PostMapping
     public QuestionResponseDto createQuestion(
-            @RequestBody CreateQuestionDto createQuestionDto ){
+            @Valid @RequestBody CreateQuestionDto createQuestionDto ){
         User user = null;
         return questionService.createQuestion(createQuestionDto,user);
     }
@@ -52,7 +53,7 @@ public class QuestionController {
 
     @PutMapping
     public QuestionResponseDto updateQuestion(
-                                               @RequestBody UpdateQuestionDto updateQuestionDto){
+            @Valid @RequestBody UpdateQuestionDto updateQuestionDto){
 
         log.info( " updateQuestionDto : " + updateQuestionDto);
         return questionService.updateQuestion(updateQuestionDto);
