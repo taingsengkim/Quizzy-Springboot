@@ -1,12 +1,13 @@
 package co.istad.y2.quizzy.service;
 
+import co.istad.y2.quizzy.dto.answer.AnswerPlayDto;
+import co.istad.y2.quizzy.dto.question.QuestionPlayDto;
 import co.istad.y2.quizzy.dto.quiz.QuizCreateDto;
+import co.istad.y2.quizzy.dto.quiz.QuizPlayResponseDto;
 import co.istad.y2.quizzy.dto.quiz.QuizResponseDto;
+import co.istad.y2.quizzy.dto.quiz.QuizUpdateDto;
 import co.istad.y2.quizzy.mapper.QuizMapper;
-import co.istad.y2.quizzy.model.Answer;
-import co.istad.y2.quizzy.model.Difficulty;
-import co.istad.y2.quizzy.model.Question;
-import co.istad.y2.quizzy.model.Quiz;
+import co.istad.y2.quizzy.model.*;
 import co.istad.y2.quizzy.repository.CategoryRepository;
 import co.istad.y2.quizzy.repository.QuestionRepository;
 import co.istad.y2.quizzy.repository.QuizRepository;
@@ -78,10 +79,27 @@ public class QuizServiceImpl implements QuizService{
     }
 
     @Override
-    public Quiz updateQuiz(Long id, Quiz quiz) {
-        return null;
+    @Transactional
+    public QuizResponseDto updateQuiz(Long id, QuizUpdateDto dto) {
+        Quiz quiz = quizRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz Not Found!"));
+        if (dto.title() != null) {
+            quiz.setTitle(dto.title());
+        }
+        if (dto.description() != null) {
+            quiz.setDescription(dto.description());
+        }
+        if (dto.duration() != null) {
+            quiz.setDuration(dto.duration());
+        }
+        if (dto.categoryId() != null) {
+            Category category = categoryRepository.findById(dto.categoryId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found!"));
+            quiz.setCategory(category);
+        }
+        Quiz updated = quizRepository.save(quiz);
+        return quizMapper.mapToResponse(updated);
     }
-
 
     @Override
     public void deleteQuiz(Long id) {
@@ -99,6 +117,28 @@ public class QuizServiceImpl implements QuizService{
     public List<QuizResponseDto> findAll() {
         return quizRepository.findAllWithQuestions().stream()
                 .map(quizMapper::mapToResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public QuizPlayResponseDto getQuizForPlay(Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz Not Found"));
+
+        return new QuizPlayResponseDto(
+                quiz.getId(),
+                quiz.getTitle(),
+                quiz.getQuestions().stream().map(q ->
+                        new QuestionPlayDto(
+                                q.getId(),
+                                q.getText(),
+                                q.getAnswers().stream()
+                                        .map(a -> new AnswerPlayDto(a.getId(), a.getText()))
+                                        .toList(),
+                                q.getQuestionType().name(),
+                                q.getPoints()
+                        )
+                ).toList()
+        );
     }
 
     @Override

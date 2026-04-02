@@ -1,7 +1,9 @@
 package co.istad.y2.quizzy.controller;
 
 import co.istad.y2.quizzy.dto.quiz.QuizCreateDto;
+import co.istad.y2.quizzy.dto.quiz.QuizPlayResponseDto;
 import co.istad.y2.quizzy.dto.quiz.QuizResponseDto;
+import co.istad.y2.quizzy.dto.quiz.QuizUpdateDto;
 import co.istad.y2.quizzy.model.Quiz;
 import co.istad.y2.quizzy.service.QuizService;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +30,13 @@ public class QuizController {
 
 
 
-//    // Update existing quiz
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Quiz> updateQuiz(@PathVariable Long id,
-//                                           @RequestBody QuizCreateDto quizCreateDto) {
-//        Quiz updatedQuiz = quizService.updateQuiz(id, quizCreateDto);
-//        return ResponseEntity.ok(updatedQuiz);
-//    }
-//
+    // Update existing quiz
+    @PatchMapping("/{id}")
+    public QuizResponseDto updateQuiz(@PathVariable Long id,
+                                           @RequestBody QuizUpdateDto quizUpdateDto) {
+        return quizService.updateQuiz(id, quizUpdateDto);
+    }
+
     // Delete quiz
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteQuiz(@PathVariable Long id) {
@@ -53,5 +54,11 @@ public class QuizController {
     @GetMapping("/{id}")
     public QuizResponseDto getQuizById(@PathVariable Long id) {
         return quizService.findById(id);
+    }
+
+    //play quiz
+    @GetMapping("/{id}/play")
+    public QuizPlayResponseDto playQuiz(@PathVariable Long id) {
+        return quizService.getQuizForPlay(id);
     }
 }

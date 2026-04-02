@@ -39,21 +39,21 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(categoryMapper::mapToListResponse).collect(Collectors.toList());
     }
 
-    @Override
-    public Category getCategoryEntityById(Long id){
-        return categoryRepository.findById(id)
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found!"));
-    }
+//    @Override
+//    public Category getCategoryEntityById(Long id){
+//        return categoryRepository.findById(id)
+//                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found!"));
+//    }
 
     @Override
     public void deleteCategory(Long id){
-        Category category = getCategoryEntityById(id);
+        Category category = categoryRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found!"));
         categoryRepository.delete(category);
     }
 
     @Override
     public CategoryResponseDto updateCategory(Long id, UpdateCategoryDto updateCategoryDto){
-        Category category = getCategoryEntityById(id);
+        Category category = categoryRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found!"));
         category.setName(updateCategoryDto.name());
         Category updated = categoryRepository.save(category);
         return categoryMapper.mapToResponse(updated);

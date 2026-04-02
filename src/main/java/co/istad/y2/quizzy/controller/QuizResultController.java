@@ -1,9 +1,7 @@
 package co.istad.y2.quizzy.controller;
 
 
-import co.istad.y2.quizzy.dto.quiz_result.QuizQuestionsDto;
-import co.istad.y2.quizzy.dto.quiz_result.QuizResultResponseDto;
-import co.istad.y2.quizzy.dto.quiz_result.SubmitQuizDto;
+import co.istad.y2.quizzy.dto.quiz_result.*;
 import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.service.AuthService;
 import co.istad.y2.quizzy.service.QuizServiceResult;
@@ -34,6 +32,21 @@ public class QuizResultController {
         return quizServiceResult.submitQuiz(submitQuizDto,user);
     }
 
+    @GetMapping("/history")
+    public List<QuizResultHistoryDto> getHistory(
+            @RequestHeader("Authorization") String authHeader) {
+        User user = authService.getUserFromToken(authHeader);
+        return quizServiceResult.getUserHistory(user);
+    }
+
+    @GetMapping("/{id}")
+    public QuizResultDetailDto getDetail(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String authHeader) {
+
+        User user = authService.getUserFromToken(authHeader);
+        return quizServiceResult.getResultDetail(id, user);
+    }
 
 //    @GetMapping
 //    public List<QuizQuestionsDto> getQuiz(@RequestParam(name="category_id") Long categoryId){
