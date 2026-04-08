@@ -28,6 +28,8 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponseDto createCategory(CreateCategoryDto createCategoryDto, User user){
         Category category = new Category();
         category.setName(createCategoryDto.name());
+        category.setDescription(createCategoryDto.description());
+        category.setImageUrl(createCategoryDto.imageUrl());
         category.setCreatedBy(user);
         Category saved = categoryRepository.save(category);
         return categoryMapper.mapToResponse(saved);
@@ -53,8 +55,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponseDto updateCategory(Long id, UpdateCategoryDto updateCategoryDto){
-        Category category = categoryRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found!"));
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found!"));
         category.setName(updateCategoryDto.name());
+        category.setDescription(updateCategoryDto.description());
+        category.setImageUrl(updateCategoryDto.imageUrl());
         Category updated = categoryRepository.save(category);
         return categoryMapper.mapToResponse(updated);
     }

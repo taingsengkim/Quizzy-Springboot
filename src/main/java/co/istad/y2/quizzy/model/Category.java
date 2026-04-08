@@ -26,6 +26,11 @@ public class Category extends BaseEntity {
 //    @JsonIgnore
 //    private List<Question> questions = new ArrayList<>();
 
+    @Column(length = 255)
+    private String description;
+
+    @Column(length = 255)
+    private String imageUrl;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore

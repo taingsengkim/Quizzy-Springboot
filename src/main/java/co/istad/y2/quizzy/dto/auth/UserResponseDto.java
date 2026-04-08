@@ -1,9 +1,9 @@
 package co.istad.y2.quizzy.dto.auth;
 
 
+import co.istad.y2.quizzy.dto.quiz.UserQuizSummaryDto;
 import co.istad.y2.quizzy.model.Role;
 import co.istad.y2.quizzy.model.UserStatus;
-import lombok.Builder;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ public record UserResponseDto(
         String email,
         String avatar,
         List<Role> role,
-        UserStatus status
+        UserStatus status,
+        List<UserQuizSummaryDto> quizHistory
 ) {
 }

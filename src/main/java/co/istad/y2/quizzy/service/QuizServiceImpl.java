@@ -128,7 +128,9 @@ public class QuizServiceImpl implements QuizService{
     public QuizPlayResponseDto getQuizForPlay(Long quizId) {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz Not Found"));
-
+        if (quiz.getQuestions() == null || quiz.getQuestions().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This quiz has no questions and cannot be played.");
+        }
         return new QuizPlayResponseDto(
                 quiz.getId(),
                 quiz.getTitle(),
@@ -142,7 +144,8 @@ public class QuizServiceImpl implements QuizService{
                                 q.getQuestionType().name(),
                                 q.getPoints()
                         )
-                ).toList()
+                ).toList(),
+                quiz.getDuration()
         );
     }
 
@@ -166,7 +169,7 @@ public class QuizServiceImpl implements QuizService{
                                                 q.getQuestionType().name(),
                                                 q.getPoints()
                                         )
-                        ).toList()
+                        ).toList(), quiz.getDuration()
                 )).toList();
 
         return quizDtos;

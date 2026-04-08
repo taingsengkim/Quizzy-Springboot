@@ -2,8 +2,7 @@ package co.istad.y2.quizzy.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +11,8 @@ import java.util.Set;
 @Setter
 @Getter
 @Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +42,8 @@ public class User extends BaseEntity{
     )
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<QuizResult> quizResults = new HashSet<>();
 
     @Override
     public String toString() {

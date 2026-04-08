@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/quiz/result")
+@RequestMapping("/api/v1/quizzes/result")
 public class QuizResultController {
     private final QuizServiceResult quizServiceResult;
     private final AuthService authService;

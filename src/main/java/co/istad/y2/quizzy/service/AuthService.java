@@ -1,8 +1,6 @@
 package co.istad.y2.quizzy.service;
 
-import co.istad.y2.quizzy.dto.auth.LoginDto;
-import co.istad.y2.quizzy.dto.auth.RegisterDto;
-import co.istad.y2.quizzy.dto.auth.UserResponseDto;
+import co.istad.y2.quizzy.dto.auth.*;
 import co.istad.y2.quizzy.model.Role;
 import co.istad.y2.quizzy.model.User;
 
@@ -11,16 +9,13 @@ import java.util.List;
 
 public interface AuthService {
      User register(RegisterDto dto);
-
-     String login(LoginDto dto);
-
-     List<UserResponseDto> findAll();
-
+     LoginResponseDto login(LoginDto dto);
+     List<AllUserResponseDto> findAll();
+     List<UserResponseDto> findAllWithDetails();
      User getUserFromToken(String authHeader);
+     UserResponseDto getUserProfile(String authHeader);
+     User approveRole(Long id);
+     List<Role> getAllRole();
 
      UserResponseDto getUserDetail(Long id);
-
-     User approveRole(Long id);
-
-     List<Role> getAllRole();
 }

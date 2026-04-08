@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 
 public record CategoryResponseDto(
         Long id,
-        String name
+        String name,
+        String description,
+        String imageUrl
 ) {
 }

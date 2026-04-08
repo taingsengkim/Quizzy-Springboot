@@ -50,6 +50,10 @@ public class QuizServiceResultImpl implements QuizServiceResult {
         result.setDuration(submitQuizDto.duration());
         result.setTotal(total);
         quizResultRepository.save(result);
+        // Add the result to the user's in-memory quiz list
+        if (user.getQuizResults() != null) {
+            user.getQuizResults().add(result);
+        }
         for (SubmitAnswerDto submitAnswerDto : submitQuizDto.answers()) {
             Question question = questionRepository.findById(submitAnswerDto.questionId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question Not Found!"));
@@ -76,7 +80,7 @@ public class QuizServiceResultImpl implements QuizServiceResult {
             userAnswerRepository.save(userAnswer);
         }
         result.setScore(score);
-        return new QuizResultResponseDto(score, total);
+        return new QuizResultResponseDto(score, total,result.getId());
     }
 
     @Override

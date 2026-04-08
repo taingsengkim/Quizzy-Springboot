@@ -41,13 +41,9 @@ public class CategoryController {
     @PostMapping
     public CategoryResponseDto createResponseDto(
             @Valid @RequestBody CreateCategoryDto createCategoryDto){
-
         User user = null;
-
-
         return categoryService.createCategory(createCategoryDto,user);
     }
-
     @GetMapping
     public List<ListCategoryResponseDto> getAllCategories(){
         return categoryService.getAllCategoriesWithQuestionCount();

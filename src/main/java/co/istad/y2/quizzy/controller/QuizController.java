@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/quiz")
+@RequestMapping("/api/v1/quizzes")
 public class QuizController {
 
     private final QuizService quizService;
@@ -62,7 +62,7 @@ public class QuizController {
 
     //play quiz
     @GetMapping("/{id}/play")
-    public QuizPlayResponseDto playQuiz(@PathVariable Long id) {
+    public QuizPlayResponseDto plyQuiz(@PathVariable Long id) {
         return quizService.getQuizForPlay(id);
     }
 }
