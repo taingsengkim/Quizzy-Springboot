@@ -52,6 +52,14 @@ public class DataInitializer {
             user.setRoles(Set.of(role));
             userRepository.save(user);
         }
+        if (userRepository.findByEmail("kim040322@gmail.com").isEmpty()) {
+            Role role = roleRepository.findByName("ADMIN")
+                    .orElseThrow(() -> new RuntimeException("Role not found"));            user.setUsername("admin");
+            user.setEmail("kim040322@gmail.com");
+            user.setPassword("Kim123!@#");
+            user.setRoles(Set.of(role));
+            userRepository.save(user);
+        }
 
         if (categoryRepository.findAll().isEmpty()) {
             Category cat1 = new Category();

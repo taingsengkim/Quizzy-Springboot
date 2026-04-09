@@ -1,8 +1,10 @@
 package co.istad.y2.quizzy.exception;
 
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,10 +24,8 @@ public class AppGlobalException {
         e.getFieldErrors().forEach(fieldError -> {
             fields.add(new FieldResponse(fieldError.getField(),fieldError.getDefaultMessage()));
         });
-
         return buildError(HttpStatus.BAD_REQUEST,"Requested data is invalid", fields);
     }
-
     private RestErrorResponse buildError(HttpStatus status, String message, Object details) {
         return RestErrorResponse.builder()
                 .message(message)
@@ -35,16 +35,13 @@ public class AppGlobalException {
                 .errorDetails(details)
                 .build();
     }
-
-
-
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ResponseStatusException.class)
-    public RestErrorResponse handleResponseStatusException(ResponseStatusException e) {
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public RestErrorResponse handleResponseStatusException(MissingRequestHeaderException e) {
         return buildError(
                 HttpStatus.valueOf(e.getStatusCode().value()),
-                e.getReason(),
-                e.getMessage()
+                e.getMessage(),
+                null
         );
     }
 }

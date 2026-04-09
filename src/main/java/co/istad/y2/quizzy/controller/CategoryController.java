@@ -9,7 +9,9 @@ import co.istad.y2.quizzy.service.AuthService;
 import co.istad.y2.quizzy.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -24,26 +26,27 @@ public class CategoryController {
         this.categoryService = categoryService;
         this.authService = authService;
     }
-//    @PostMapping
-//    public CategoryResponseDto createResponseDto(
-//            @RequestHeader("Authorization") String authHeader,
-//            @Valid @RequestBody CreateCategoryDto createCategoryDto){
-//
-//        User user = authService.getUserFromToken(authHeader);
-//
-//        if(user.getRole()!= Role.ADMIN){
-//            throw new InvalidCredentialsException("Unauthorized");
-//        }
-//        System.out.println(user);
-//        return categoryService.createCategory(createCategoryDto,user);
-//    }
-
     @PostMapping
     public CategoryResponseDto createResponseDto(
+            @RequestHeader("Authorization") String authHeader,
             @Valid @RequestBody CreateCategoryDto createCategoryDto){
-        User user = null;
+
+        User user = authService.getUserFromToken(authHeader);
+
+        boolean isAdmin = user.getRoles().stream().anyMatch(r->r.getName().equalsIgnoreCase("ADMIN"));
+        if(!isAdmin){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED");
+        }
+        System.out.println(user);
         return categoryService.createCategory(createCategoryDto,user);
     }
+//
+//    @PostMapping
+//    public CategoryResponseDto createResponseDto(
+//            @Valid @RequestBody CreateCategoryDto createCategoryDto){
+//        User user = null;
+//        return categoryService.createCategory(createCategoryDto,user);
+//    }
     @GetMapping
     public List<ListCategoryResponseDto> getAllCategories(){
         return categoryService.getAllCategoriesWithQuestionCount();
@@ -54,7 +57,7 @@ public class CategoryController {
     }
     @PutMapping("/{id}")
     public CategoryResponseDto updateCategory(@PathVariable Long id,
-                                             @Valid @RequestBody UpdateCategoryDto updateCategoryDto){
+                         @Valid @RequestBody UpdateCategoryDto updateCategoryDto){
         return categoryService.updateCategory(id,updateCategoryDto);
     }
 }
