@@ -125,11 +125,12 @@ public class QuizServiceImpl implements QuizService{
     }
 
     @Override
+    @Transactional
     public QuizPlayResponseDto getQuizForPlay(Long quizId) {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz Not Found"));
         if (quiz.getQuestions() == null || quiz.getQuestions().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This quiz has no questions and cannot be played.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This quiz has no questions.");
         }
         return new QuizPlayResponseDto(
                 quiz.getId(),
@@ -148,7 +149,6 @@ public class QuizServiceImpl implements QuizService{
                 quiz.getDuration()
         );
     }
-
     @Override
     public List<QuizPlayResponseDto> findByCategoryId(Long categoryId) {
         CategoryResponseDto category = categoryMapper.mapToResponse(categoryRepository.findById(categoryId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found!")));
@@ -173,6 +173,29 @@ public class QuizServiceImpl implements QuizService{
                 )).toList();
 
         return quizDtos;
+    }
+
+    @Override
+    @Transactional
+    public boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz Not Found"));
+
+        List<Question> questions = quiz.getQuestions();
+        if (questionIndex < 0 || questionIndex >= questions.size()) return false;
+
+        Question question = questions.get(questionIndex);
+        return question.getAnswers().stream()
+                .filter(Answer::isCorrect)
+                .anyMatch(a -> a.getText().equalsIgnoreCase(userAnswer.trim()));
+    }
+
+    @Override
+    @Transactional
+    public int totalQuestions(Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz Not Found"));
+        return quiz.getQuestions().size();
     }
 
 

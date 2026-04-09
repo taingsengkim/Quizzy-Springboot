@@ -20,4 +20,6 @@ public interface QuizService {
     List<QuizResponseDto> findAll();
     QuizPlayResponseDto getQuizForPlay(Long quizId);
     List<QuizPlayResponseDto> findByCategoryId(Long categoryId);
+    boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer);
+    int totalQuestions(Long quizId);
 }
