@@ -176,4 +176,29 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
+    @Override
+    public UserResponseDto updateProfile(String authHeader, UpdateProfileDto dto) {
+        User user = getUserFromToken(authHeader);
+
+        if (dto.username() != null && !dto.username().isBlank()) {
+            userRepository.findByUsername(dto.username()).ifPresent(existing -> {
+                if (!existing.getId().equals(user.getId())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already taken");
+                }
+            });
+            user.setUsername(dto.username());
+        }
+
+        if (dto.password() != null && !dto.password().isBlank()) {
+            user.setPassword(dto.password());
+        }
+
+        if (dto.avatar() != null && !dto.avatar().isBlank()) {
+            user.setAvatar(dto.avatar());
+        }
+
+        userRepository.save(user);
+        return getUserProfile(authHeader);
+    }
+
 }

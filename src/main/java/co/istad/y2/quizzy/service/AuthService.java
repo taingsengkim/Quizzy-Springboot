@@ -18,4 +18,6 @@ public interface AuthService {
      List<Role> getAllRole();
 
      UserResponseDto getUserDetail(Long id);
+
+     UserResponseDto updateProfile(String authHeader, UpdateProfileDto dto);
 }

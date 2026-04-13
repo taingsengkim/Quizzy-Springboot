@@ -65,6 +65,12 @@ public class AuthController {
     // Get profile of logged-in user (with quiz stats)
     @GetMapping("/profile")
     public UserResponseDto getProfile(@RequestHeader("Authorization") String authHeader) {
-        return authService.getUserProfile(authHeader); // Call service to include quiz summary
+        return authService.getUserProfile(authHeader);
+    }
+    @PatchMapping("/profile")
+    public UserResponseDto updateProfile(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody UpdateProfileDto dto) {
+        return authService.updateProfile(authHeader, dto);
     }
 }
