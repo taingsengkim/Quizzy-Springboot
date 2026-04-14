@@ -34,6 +34,10 @@ public class QuizRoom {
         private String text;
         private List<Answer> answers;
         private int questionIndex;
+        private String code;
+        private String questionType;
+        private Integer points;
+        private String difficulty;
     }
 
     @Getter

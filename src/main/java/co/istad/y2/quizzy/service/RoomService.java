@@ -75,7 +75,16 @@ public class RoomService {
         QuizRoom.CurrentQuestion cq = new QuizRoom.CurrentQuestion();
         cq.setId(q.id());
         cq.setText(q.text());
+        cq.setCode(q.code());
+        cq.setQuestionType(q.questionType());
+        cq.setPoints(q.points());
+        cq.setDifficulty(q.difficulty());
         cq.setQuestionIndex(index);
+        log.info("TYPE = {}, POINTS = {}, DIFF = {}",
+                q.questionType(),
+                q.points(),
+                q.difficulty()
+        );
         List<QuizRoom.Answer> answers = new ArrayList<>();
         for (AnswerPlayDto a : q.answers()) {
             answers.add(new QuizRoom.Answer(a.id(), a.text()));
