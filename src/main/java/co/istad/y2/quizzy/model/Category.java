@@ -34,7 +34,7 @@ public class Category extends BaseEntity {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Quiz> quizzes;
+    private List<Quiz> quizzes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "created_by")

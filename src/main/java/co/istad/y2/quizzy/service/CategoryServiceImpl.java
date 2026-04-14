@@ -36,9 +36,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<ListCategoryResponseDto> getAllCategoriesWithQuestionCount(){
-        return categoryRepository.findAll().stream()
-                .map(categoryMapper::mapToListResponse).collect(Collectors.toList());
+    public List<ListCategoryResponseDto> getAllCategoriesWithQuestionCount() {
+        return categoryRepository.findAllWithQuizCount()
+                .stream()
+                .map(obj -> new ListCategoryResponseDto(
+                        (Long) obj[0],              // id
+                        (String) obj[1],           // name
+                        ((Long) obj[2]).intValue(),// totalQuiz
+                        (String) obj[3],           // description
+                        (String) obj[4]            // imageUrl
+                ))
+                .toList();
     }
 
 //    @Override
