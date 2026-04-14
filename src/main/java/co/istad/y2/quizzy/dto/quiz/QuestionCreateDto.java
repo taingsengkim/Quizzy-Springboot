@@ -13,7 +13,7 @@ public record QuestionCreateDto(
 
         @NotNull(message = "Question type is required")
         QuestionType questionType,
-
+        String code,
         @NotNull(message = "Points are required")
         @Positive(message = "Points must be a positive number")
         Integer points,

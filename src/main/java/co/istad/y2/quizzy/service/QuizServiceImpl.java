@@ -61,7 +61,7 @@ public class QuizServiceImpl implements QuizService{
                 q.setQuestionType(qDto.questionType());
                 q.setPoints(qDto.points());
                 q.setDifficulty(Difficulty.valueOf(qDto.difficulty()));
-
+                q.setCode(qDto.code());
                 // Map answers
                 if (qDto.answers() != null) {
                     List<Answer> answers = qDto.answers().stream().map(aDto -> {
@@ -135,6 +135,9 @@ public class QuizServiceImpl implements QuizService{
         return new QuizPlayResponseDto(
                 quiz.getId(),
                 quiz.getTitle(),
+                quiz.getDescription(),
+                quiz.getDuration(),
+                quiz.getCategory() != null ? quiz.getCategory().getId() : null,
                 quiz.getQuestions().stream().map(q ->
                         new QuestionPlayDto(
                                 q.getId(),
@@ -143,38 +146,42 @@ public class QuizServiceImpl implements QuizService{
                                         .map(a -> new AnswerPlayDto(a.getId(), a.getText()))
                                         .toList(),
                                 q.getQuestionType().name(),
-                                q.getPoints()
+                                q.getPoints(),
+                                q.getCode(),
+                                q.getDifficulty() != null ? q.getDifficulty().name() : null
                         )
-                ).toList(),
-                quiz.getDuration()
+                ).toList()
         );
     }
+
     @Override
     public List<QuizPlayResponseDto> findByCategoryId(Long categoryId) {
-        CategoryResponseDto category = categoryMapper.mapToResponse(categoryRepository.findById(categoryId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found!")));
+        categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found!"));
 
-        List<Quiz> quizzes = quizRepository.findByCategoryId(categoryId);
-        List<QuizPlayResponseDto> quizDtos = quizzes.stream()
-                .map(quiz ->
-                        new QuizPlayResponseDto(
-                            quiz.getId(),
-                                quiz.getTitle(),
-                                quiz.getQuestions().stream().map(q ->
-                                        new QuestionPlayDto(
-                                                q.getId(),
-                                                q.getText(),
-                                                q.getAnswers().stream()
-                                                        .map(a -> new AnswerPlayDto(a.getId(), a.getText()))
-                                                        .toList(),
-                                                q.getQuestionType().name(),
-                                                q.getPoints()
-                                        )
-                        ).toList(), quiz.getDuration()
-                )).toList();
-
-        return quizDtos;
+        return quizRepository.findByCategoryId(categoryId).stream()
+                .map(quiz -> new QuizPlayResponseDto(
+                        quiz.getId(),
+                        quiz.getTitle(),
+                        quiz.getDescription(),
+                        quiz.getDuration(),
+                        quiz.getCategory() != null ? quiz.getCategory().getId() : null,
+                        quiz.getQuestions().stream().map(q ->
+                                new QuestionPlayDto(
+                                        q.getId(),
+                                        q.getText(),
+                                        q.getAnswers().stream()
+                                                .map(a -> new AnswerPlayDto(a.getId(), a.getText()))
+                                                .toList(),
+                                        q.getQuestionType().name(),
+                                        q.getPoints(),
+                                        q.getCode(),
+                                        q.getDifficulty() != null ? q.getDifficulty().name() : null
+                                )
+                        ).toList()
+                ))
+                .toList();
     }
-
     @Override
     @Transactional
     public boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer) {

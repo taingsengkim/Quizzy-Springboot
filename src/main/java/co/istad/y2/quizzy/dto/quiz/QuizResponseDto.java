@@ -11,6 +11,7 @@ public record QuizResponseDto(
         Integer duration,
 //        String categoryName,
         Long categoryId,
+
 //        String createdByUsername,
         List<QuestionResponseDto> questions
 ) {

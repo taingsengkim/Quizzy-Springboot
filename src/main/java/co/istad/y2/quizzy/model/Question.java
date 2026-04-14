@@ -34,5 +34,9 @@ public class Question extends BaseEntity{
     @JoinColumn(name = "quiz_id")
     @JsonIgnore
     private Quiz quiz;
+
+    @Column(columnDefinition = "TEXT")
+    private String code;
+
 }
 

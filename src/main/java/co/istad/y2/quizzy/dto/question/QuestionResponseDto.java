@@ -15,7 +15,7 @@ public record QuestionResponseDto(
         List<AnswerResponseDto> answers,
         QuestionType questionType,
         Integer points,
-
+        String code,
         Difficulty difficulty
 ) {
 }

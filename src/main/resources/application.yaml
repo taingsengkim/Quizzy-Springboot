@@ -1,7 +1,8 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
+  #      ddl-auto: create-drop
 #    show-sql: true
 #    properties:
 #      hibernate:
@@ -14,4 +15,4 @@ spring:
   application:
     name: quizzy
 server:
-  port: 8090
+  port: ${PORT:8090}

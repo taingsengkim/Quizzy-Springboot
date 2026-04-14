@@ -14,6 +14,8 @@ public record CreateQuestionDto(
         @Size(max = 500, message = "Question text must be less than 500 characters")
         String text,
 
+        String code,
+
         @NotNull(message = "Quiz ID is required")
         Long quizId,
 

@@ -7,7 +7,9 @@ import java.util.List;
 public record QuizPlayResponseDto (
         Long id,
         String title,
-        List<QuestionPlayDto> questions,
-        Integer duration
+        String description,
+        Integer duration,
+        Long categoryId,
+        List<QuestionPlayDto> questions
         ){
 }

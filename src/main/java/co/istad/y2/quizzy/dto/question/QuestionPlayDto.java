@@ -9,6 +9,8 @@ public record QuestionPlayDto(
         String text,
         List<AnswerPlayDto> answers,
         String questionType,
-        Integer points
+        Integer points,
+        String code,
+        String difficulty
 ) {
 }

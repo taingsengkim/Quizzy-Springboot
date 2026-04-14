@@ -16,6 +16,9 @@ public record UpdateQuestionDto(
         @NotNull(message = "Question type is required")
         QuestionType questionType,
 
+        String code,
+        String language,
+
         @NotNull(message = "Points are required")
         @Positive(message = "Points must be a positive number")
         Integer points,
