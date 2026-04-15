@@ -11,6 +11,7 @@ public record QuestionPlayDto(
         String questionType,
         Integer points,
         String code,
-        String difficulty
+        String difficulty,
+        String hint
 ) {
 }

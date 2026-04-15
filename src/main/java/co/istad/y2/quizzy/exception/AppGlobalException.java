@@ -44,4 +44,15 @@ public class AppGlobalException {
                 null
         );
     }
+    @ExceptionHandler(ResponseStatusException.class)
+    public RestErrorResponse handleResponseStatusException(ResponseStatusException e) {
+
+        HttpStatus status = HttpStatus.valueOf(e.getStatusCode().value());
+
+        return buildError(
+                status,
+                e.getReason() != null ? e.getReason() : "Unexpected error",
+                null
+        );
+    }
 }

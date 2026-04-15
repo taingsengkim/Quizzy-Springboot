@@ -22,7 +22,8 @@ public record UpdateQuestionDto(
         @NotNull(message = "Points are required")
         @Positive(message = "Points must be a positive number")
         Integer points,
-
+        @Size(max = 1000, message = "Hint must be less than 1000 characters")
+        String hint,
         @NotNull(message = "Difficulty is required")
         Difficulty difficulty,
 

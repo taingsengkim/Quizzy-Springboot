@@ -10,7 +10,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/quizzes")
@@ -64,5 +66,29 @@ public class QuizController {
     @GetMapping("/{id}/play")
     public QuizPlayResponseDto plyQuiz(@PathVariable Long id) {
         return quizService.getQuizForPlay(id);
+    }
+
+    @GetMapping("/{quizId}/questions/{questionId}/hint")
+    public ResponseEntity<?> getHint(
+            @PathVariable Long quizId,
+            @PathVariable Long questionId,
+            @RequestParam String attemptId
+    ) {
+        String hint = quizService.getHint(quizId, questionId, attemptId);
+        return ResponseEntity.ok(hint);
+    }
+    @PostMapping("/{quizId}/reset-hints")
+    public void resetHints(@RequestParam String attemptId) {
+        quizService.resetHint(attemptId);
+    }
+    @PostMapping("/{quizId}/start-attempt")
+    public ResponseEntity<Map<String, String>> startAttempt(@PathVariable Long quizId) {
+
+        String attemptId = quizService.startAttempt(quizId);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("attemptId", attemptId);
+
+        return ResponseEntity.ok(response);
     }
 }

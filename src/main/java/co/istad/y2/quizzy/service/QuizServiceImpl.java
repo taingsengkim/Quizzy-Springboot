@@ -18,7 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,7 +31,7 @@ public class QuizServiceImpl implements QuizService{
     private final CategoryRepository categoryRepository;
     private final QuizMapper quizMapper;
     private final CategoryMapper categoryMapper;
-
+    private final Map<String, Map<Long, Integer>> hintUsage = new HashMap<>();
     public QuizServiceImpl(QuizRepository quizRepository,
                            QuestionRepository questionRepository,
                            CategoryRepository categoryRepository,
@@ -62,6 +64,7 @@ public class QuizServiceImpl implements QuizService{
                 q.setPoints(qDto.points());
                 q.setDifficulty(Difficulty.valueOf(qDto.difficulty()));
                 q.setCode(qDto.code());
+                q.setHint(qDto.hint());
                 // Map answers
                 if (qDto.answers() != null) {
                     List<Answer> answers = qDto.answers().stream().map(aDto -> {
@@ -148,7 +151,8 @@ public class QuizServiceImpl implements QuizService{
                                 q.getQuestionType().name(),
                                 q.getPoints(),
                                 q.getCode(),
-                                q.getDifficulty() != null ? q.getDifficulty().name() : null
+                                q.getDifficulty() != null ? q.getDifficulty().name() : null,
+                                q.getHint()
                         )
                 ).toList()
         );
@@ -176,7 +180,8 @@ public class QuizServiceImpl implements QuizService{
                                         q.getQuestionType().name(),
                                         q.getPoints(),
                                         q.getCode(),
-                                        q.getDifficulty() != null ? q.getDifficulty().name() : null
+                                        q.getDifficulty() != null ? q.getDifficulty().name() : null,
+                                        q.getHint()
                                 )
                         ).toList()
                 ))
@@ -205,5 +210,56 @@ public class QuizServiceImpl implements QuizService{
         return quiz.getQuestions().size();
     }
 
+    public String getHint(Long quizId, Long questionId, String attemptId) {
+
+        // get attempt map
+        Map<Long, Integer> attemptHints =
+                hintUsage.computeIfAbsent(attemptId, k -> new HashMap<>());
+
+        int used = attemptHints.getOrDefault(questionId, 0);
+
+        if (used >= 2) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "You can only use 2 hints per question"
+            );
+        }
+
+        // increment usage
+        attemptHints.put(questionId, used + 1);
+
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz Not Found"));
+
+        Question question = quiz.getQuestions().stream()
+                .filter(q -> q.getId().equals(questionId))
+                .findFirst()
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Question Not Found"));
+
+        return question.getHint();
+    }
+    @Override
+    public void resetHint(String attempId) {
+        hintUsage.remove(attempId);
+    }
+
+    @Override
+    public String startAttempt(Long quizId) {
+
+        // check quiz exists (optional but good)
+        quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Quiz Not Found"));
+
+        // generate unique attemptId
+        String attemptId = java.util.UUID.randomUUID().toString();
+
+        // initialize hint tracking
+        hintUsage.put(attemptId, new HashMap<>());
+
+        return attemptId;
+    }
 
 }

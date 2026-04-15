@@ -56,6 +56,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = new Question();
         question.setText(createQuestionDto.text());
         question.setCode(createQuestionDto.code());
+        question.setHint(createQuestionDto.hint());
         answers.forEach(a->a.setQuestion(question));
         question.setAnswers(answers);
         question.setQuiz(quiz);
@@ -85,6 +86,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question Not Found!"));
         if (dto.text() != null) question.setText(dto.text());
         if (dto.code() != null) question.setCode(dto.code());
+        if (dto.hint() != null) question.setHint(dto.hint());
         if (dto.questionType() != null) question.setQuestionType(dto.questionType());
         if (dto.points() != null) question.setPoints(dto.points());
         if (dto.difficulty() != null) question.setDifficulty(dto.difficulty());

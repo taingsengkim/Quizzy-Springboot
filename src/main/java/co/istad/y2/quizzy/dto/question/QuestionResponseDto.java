@@ -16,6 +16,7 @@ public record QuestionResponseDto(
         QuestionType questionType,
         Integer points,
         String code,
-        Difficulty difficulty
+        Difficulty difficulty,
+        String hint
 ) {
 }

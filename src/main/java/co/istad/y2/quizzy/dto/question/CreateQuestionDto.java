@@ -18,6 +18,8 @@ public record CreateQuestionDto(
 
         @NotNull(message = "Quiz ID is required")
         Long quizId,
+        @Size(max = 1000, message = "Hint must be less than 1000 characters")
+        String hint,
 
         @NotNull(message = "Question type is required")
         @Enumerated(EnumType.STRING)

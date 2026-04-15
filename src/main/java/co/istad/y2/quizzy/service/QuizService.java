@@ -22,4 +22,7 @@ public interface QuizService {
     List<QuizPlayResponseDto> findByCategoryId(Long categoryId);
     boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer);
     int totalQuestions(Long quizId);
+    String getHint(Long quizId, Long questionId, String attempId);
+    void resetHint(String attempId);
+    String startAttempt(Long quizId);
 }

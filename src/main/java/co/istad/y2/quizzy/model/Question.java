@@ -26,7 +26,8 @@ public class Question extends BaseEntity{
     private Integer points;
     private Difficulty difficulty;
 
-
+    @Column(columnDefinition = "TEXT")
+    private String hint;
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL , orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
 
