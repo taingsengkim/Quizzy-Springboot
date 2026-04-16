@@ -7,6 +7,7 @@ import co.istad.y2.quizzy.repository.QuizRepository;
 import co.istad.y2.quizzy.repository.RoleRepository;
 import co.istad.y2.quizzy.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,14 +19,18 @@ public class DataInitializer {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final QuizRepository quizRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
     public DataInitializer(RoleRepository roleRepository
     ,UserRepository userRepository
     ,CategoryRepository categoryRepository
-    ,QuizRepository quizRepository){
+    ,QuizRepository quizRepository,
+                           BCryptPasswordEncoder passwordEncoder){
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.quizRepository = quizRepository;
+        this.passwordEncoder=passwordEncoder;
     }
 
     @PostConstruct
@@ -56,7 +61,7 @@ public class DataInitializer {
             Role role = roleRepository.findByName("ADMIN")
                     .orElseThrow(() -> new RuntimeException("Role not found"));            user.setUsername("admin");
             user.setEmail("kim040322@gmail.com");
-            user.setPassword("Kim123!@#");
+            user.setPassword(passwordEncoder.encode("Kim123!@#"));
             user.setRoles(Set.of(role));
             userRepository.save(user);
         }

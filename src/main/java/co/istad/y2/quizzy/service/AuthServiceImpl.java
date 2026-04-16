@@ -11,6 +11,7 @@ import co.istad.y2.quizzy.repository.UserRepository;
 import co.istad.y2.quizzy.repository.QuizResultRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,24 +25,27 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final JwtUtil jwtUtil;
     private final QuizResultRepository quizResultRepository; // For quiz stats
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public AuthServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
                            JwtUtil jwtUtil,
-                           QuizResultRepository quizResultRepository) {
+                           QuizResultRepository quizResultRepository,
+                           BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.jwtUtil = jwtUtil;
         this.quizResultRepository = quizResultRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public User register(RegisterDto dto) {
         if (userRepository.findByUsername(dto.username()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username '" + dto.username() + "' already exists");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
         }
         if (userRepository.findByEmail(dto.email()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email '" + dto.email() + "' is already registered");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already registered");
         }
 
         Role role = roleRepository.findByName(dto.role().toUpperCase())
@@ -49,11 +53,10 @@ public class AuthServiceImpl implements AuthService {
 
         User user = new User();
         user.setEmail(dto.email());
-        user.setPassword(dto.password());
+        user.setPassword(passwordEncoder.encode(dto.password())); // hash it
         user.setUsername(dto.username());
         user.setAvatar("https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png");
         user.getRoles().add(role);
-
         user.setStatus(dto.role().equalsIgnoreCase("INSTRUCTOR") ? UserStatus.PENDING : UserStatus.APPROVED);
 
         return userRepository.save(user);
@@ -64,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password"));
 
-        if (!user.getPassword().equals(dto.password())) {
+        if (!passwordEncoder.matches(dto.password(), user.getPassword())) { //  compare hash
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password");
         }
 
@@ -200,5 +203,6 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
         return getUserProfile(authHeader);
     }
+
 
 }

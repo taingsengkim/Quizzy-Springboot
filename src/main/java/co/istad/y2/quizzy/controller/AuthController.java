@@ -73,4 +73,5 @@ public class AuthController {
             @RequestBody UpdateProfileDto dto) {
         return authService.updateProfile(authHeader, dto);
     }
+
 }
