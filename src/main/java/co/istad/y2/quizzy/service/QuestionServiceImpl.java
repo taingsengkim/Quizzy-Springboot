@@ -63,11 +63,32 @@ public class QuestionServiceImpl implements QuestionService {
         question.setQuestionType(createQuestionDto.questionType());
         question.setPoints(createQuestionDto.points());
         question.setDifficulty(createQuestionDto.difficulty());
+
+        if (createQuestionDto.questionType() == QuestionType.SINGLE_CHOICE ||
+                createQuestionDto.questionType() == QuestionType.TRUE_FALSE) {
+
+            long correctCount = answers.stream()
+                    .filter(Answer::isCorrect)
+                    .count();
+
+            if (correctCount != 1) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Only 1 correct answer is allowed for this question type"
+                );
+            }
+        }
+
+
         Question saved = questionRepository.save(question);
         List<AnswerResponseDto> answerResponseDtos = saved.getAnswers().stream()
                 .map(a->new AnswerResponseDto(a.getId(),a.getText(),a.isCorrect())).toList();
+
+
         return questionMapper.mapToResponse(saved);
     }
+
+
 
     @Override
     public List<QuestionResponseDto> getAllQuestions(){
@@ -115,6 +136,20 @@ public class QuestionServiceImpl implements QuestionService {
                     question.getAnswers().add(newAns);
                 }
             });
+        }
+        if (question.getQuestionType() == QuestionType.SINGLE_CHOICE ||
+                question.getQuestionType() == QuestionType.TRUE_FALSE) {
+
+            long correctCount = question.getAnswers().stream()
+                    .filter(Answer::isCorrect)
+                    .count();
+
+            if (correctCount != 1) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Only 1 correct answer is allowed for this question type"
+                );
+            }
         }
         Question saved = questionRepository.save(question);
         return questionMapper.mapToResponse(saved);
