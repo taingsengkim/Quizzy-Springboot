@@ -12,6 +12,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.Set;
+
 @Slf4j
 @Controller
 public class QuizRoomController {
@@ -73,9 +75,22 @@ public class QuizRoomController {
         // Check correctness
         QuizPlayResponseDto quiz = quizService.getQuizForPlay(room.getQuizId());
         QuestionPlayDto question = quiz.questions().get(myIndex);
-        boolean correct = question.answers().stream()
-                .anyMatch(a -> a.id().equals(Long.parseLong(message.answer()))
-                        && quizService.isCorrectAnswer(room.getQuizId(), myIndex, a.text()));
+// Parse multiple answers
+        String[] answerIds = message.answer().split(",");
+
+            Set<Long> selectedIds = java.util.Arrays.stream(answerIds)
+                    .map(String::trim)
+                    .map(Long::parseLong)
+                    .collect(java.util.stream.Collectors.toSet());
+
+    // Get correct answers
+            Set<Long> correctIds = question.answers().stream()
+                    .filter(a -> quizService.isCorrectAnswer(room.getQuizId(), myIndex, a.text()))
+                    .map(a -> a.id())
+                    .collect(java.util.stream.Collectors.toSet());
+
+    // Check if user selected EXACT correct answers
+            boolean correct = selectedIds.equals(correctIds);
         if (correct) {
             room.getScores().merge(username, 1, Integer::sum);
             log.info("User {} correct on q{} — score: {}", username, myIndex, room.getScores().get(username));
