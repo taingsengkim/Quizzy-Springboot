@@ -31,8 +31,8 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: quizzy_final_user
     password: 9Qd5MCrZo2RYOeSNf1c0ZNkKcO0L6zZl
-    url: jdbc:postgresql://dpg-d7hs82v7f7vs738q2gig-a.singapore-postgres.render.com:5432/quizzy_final?sslmode=require
+    url: jdbc:postgresql://dpg-d7hs82v7f7vs738q2gig-a.singapore-postgres.render.com:5432/quizzy_final?sslmode=require&ssl=true
   application:
     name: quizzy
 server:
-  port: ${PORT:8090}
+  port: ${PORT:8080}
