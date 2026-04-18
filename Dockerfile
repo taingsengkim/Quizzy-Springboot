@@ -1,13 +1,13 @@
-# ===== BUILD STAGE =====
 FROM gradle:8.7-jdk21 AS build
 
 WORKDIR /app
 
 COPY . .
 
-RUN gradle clean build -x test
+RUN chmod +x gradlew
 
-# ===== RUNTIME STAGE =====
+RUN ./gradlew clean build -x test
+
 FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
