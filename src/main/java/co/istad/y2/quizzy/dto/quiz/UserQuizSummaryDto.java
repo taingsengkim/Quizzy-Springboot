@@ -4,5 +4,6 @@ public record UserQuizSummaryDto(
         Long quizId,
         String quizTitle,
         Integer totalQuestions,
-        Integer correctAnswers
+        Integer correctAnswers,
+        Long duration
 ) {}

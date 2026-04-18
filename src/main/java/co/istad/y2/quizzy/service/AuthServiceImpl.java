@@ -127,7 +127,8 @@ public class AuthServiceImpl implements AuthService {
                         result.getQuiz().getId(),
                         result.getQuiz().getTitle(),
                         result.getQuiz().getQuestions().size(),
-                        result.getScore()
+                        result.getScore(),
+                        result.getDuration()
                 ))
                 .toList();
 

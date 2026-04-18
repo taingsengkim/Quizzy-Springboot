@@ -80,7 +80,7 @@ public class QuizServiceResultImpl implements QuizServiceResult {
             userAnswerRepository.save(userAnswer);
         }
         result.setScore(score);
-        return new QuizResultResponseDto(score, total,result.getId());
+        return new QuizResultResponseDto(score, total,result.getId(),result.getDuration());
     }
 
     @Override
@@ -134,6 +134,7 @@ public class QuizServiceResultImpl implements QuizServiceResult {
                 result.getQuiz().getTitle(),
                 result.getScore(),
                 result.getTotal(),
+                result.getDuration(),
                 questions
         );
     }

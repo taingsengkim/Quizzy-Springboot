@@ -1,13 +1,19 @@
-# Use JDK 21
+# ===== BUILD STAGE =====
+FROM gradle:8.7-jdk21 AS build
+
+WORKDIR /app
+
+COPY . .
+
+RUN gradle clean build -x test
+
+# ===== RUNTIME STAGE =====
 FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
 
-# Copy jar
-COPY build/libs/*.jar app.jar
+COPY --from=build /app/build/libs/*.jar app.jar
 
-# Expose port (Render uses it)
 EXPOSE 8080
 
-# Run app
 ENTRYPOINT ["java", "-jar", "app.jar"]

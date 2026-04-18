@@ -7,6 +7,7 @@ public record QuizResultDetailDto(
         String quizTitle,
         Integer score,
         Integer total,
+        Long duration,
         List<QuestionResultDto> questions
 ) {
 }

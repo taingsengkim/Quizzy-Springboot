@@ -1,17 +1,37 @@
+#spring:
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#  #      ddl-auto: create-d rop
+##    show-sql: true
+##    properties:
+##      hibernate:
+##        format_sql: true
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    username: postgres
+#    password: 04182022
+#    url: jdbc:postgresql://localhost:5432/quizzy_final
+#  application:
+#    name: quizzy
+#server:
+#  port: ${PORT:8090}
+
+
 spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
   #      ddl-auto: create-d rop
-#    show-sql: true
-#    properties:
-#      hibernate:
-#        format_sql: true
+  #    show-sql: true
+  #    properties:
+  #      hibernate:
+  #        format_sql: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: 04182022
-    url: jdbc:postgresql://localhost:5432/quizzy_final
+    username: quizzy_final_user
+    password: 9Qd5MCrZo2RYOeSNf1c0ZNkKcO0L6zZl
+    url: jdbc:postgresql://dpg-d7hs82v7f7vs738q2gig-a.singapore-postgres.render.com:5432/quizzy_final?sslmode=require
   application:
     name: quizzy
 server:
