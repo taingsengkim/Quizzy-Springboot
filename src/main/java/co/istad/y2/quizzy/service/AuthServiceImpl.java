@@ -10,6 +10,9 @@ import co.istad.y2.quizzy.repository.RoleRepository;
 import co.istad.y2.quizzy.repository.UserRepository;
 import co.istad.y2.quizzy.repository.QuizResultRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -81,15 +84,17 @@ public class AuthServiceImpl implements AuthService {
 
         return new LoginResponseDto(accessToken, refreshToken);
     }
-    public List<AllUserResponseDto> findAll() {
-        return userRepository.findAll().stream()
+    @Override
+    public Page<AllUserResponseDto> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return userRepository.findAll(pageable)
                 .map(u -> new AllUserResponseDto(
                         u.getId(),
                         u.getUsername(),
                         u.getEmail(),
                         u.getAvatar()
-                ))
-                .toList();
+                ));
     }
 
     @Override
@@ -183,7 +188,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserResponseDto updateProfile(String authHeader, UpdateProfileDto dto) {
         User user = getUserFromToken(authHeader);
-
         if (dto.username() != null && !dto.username().isBlank()) {
             userRepository.findByUsername(dto.username()).ifPresent(existing -> {
                 if (!existing.getId().equals(user.getId())) {
@@ -192,18 +196,34 @@ public class AuthServiceImpl implements AuthService {
             });
             user.setUsername(dto.username());
         }
-
         if (dto.password() != null && !dto.password().isBlank()) {
-            user.setPassword(dto.password());
+            if (dto.oldPassword() == null || dto.oldPassword().isBlank()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Old password is required"
+                );
+            }
+            if (!passwordEncoder.matches(dto.oldPassword(), user.getPassword())) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Old password is incorrect"
+                );
+            }
+            if (passwordEncoder.matches(dto.password(), user.getPassword())) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "New password cannot be same as old password"
+                );
+            }
+            user.setPassword(passwordEncoder.encode(dto.password()));
         }
-
         if (dto.avatar() != null && !dto.avatar().isBlank()) {
             user.setAvatar(dto.avatar());
         }
-
         userRepository.save(user);
         return getUserProfile(authHeader);
     }
+
 
 
 }

@@ -20,7 +20,8 @@ public interface QuizService {
     QuizResponseDto findById(Long id);
     Page<QuizResponseDto> findAll(int page, int size);
     QuizPlayResponseDto getQuizForPlay(Long quizId);
-    Page<QuizPlayResponseDto> findByCategoryId(Long categoryId, int page, int size);    boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer);
+    Page<QuizResponseDto> findByCategoryId(Long categoryId, int page, int size);
+    boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer);
     int totalQuestions(Long quizId);
     String getHint(Long quizId, Long questionId, String attempId);
     void resetHint(String attempId);

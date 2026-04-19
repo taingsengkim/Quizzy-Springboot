@@ -1,8 +1,10 @@
 package co.istad.y2.quizzy.service;
 
 import co.istad.y2.quizzy.dto.answer.AnswerPlayDto;
+import co.istad.y2.quizzy.dto.answer.AnswerResponseDto;
 import co.istad.y2.quizzy.dto.category.CategoryResponseDto;
 import co.istad.y2.quizzy.dto.question.QuestionPlayDto;
+import co.istad.y2.quizzy.dto.question.QuestionResponseDto;
 import co.istad.y2.quizzy.dto.quiz.QuizCreateDto;
 import co.istad.y2.quizzy.dto.quiz.QuizPlayResponseDto;
 import co.istad.y2.quizzy.dto.quiz.QuizResponseDto;
@@ -164,7 +166,7 @@ public class QuizServiceImpl implements QuizService{
     }
 
     @Override
-    public Page<QuizPlayResponseDto> findByCategoryId(Long categoryId, int page, int size) {
+    public Page<QuizResponseDto> findByCategoryId(Long categoryId, int page, int size) {
 
         categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -174,29 +176,32 @@ public class QuizServiceImpl implements QuizService{
         Pageable pageable = PageRequest.of(page, size);
 
         return quizRepository.findByCategoryId(categoryId, pageable)
-                .map(quiz -> new QuizPlayResponseDto(
+                .map(quiz -> new QuizResponseDto(
                         quiz.getId(),
                         quiz.getTitle(),
                         quiz.getDescription(),
                         quiz.getDuration(),
                         quiz.getCategory() != null ? quiz.getCategory().getId() : null,
                         quiz.getQuestions().stream().map(q ->
-                                new QuestionPlayDto(
+                                new QuestionResponseDto(
                                         q.getId(),
                                         q.getText(),
                                         q.getAnswers().stream()
-                                                .map(a -> new AnswerPlayDto(a.getId(), a.getText()))
+                                                .map(a -> new AnswerResponseDto(
+                                                        a.getId(),
+                                                        a.getText(),
+                                                        a.isCorrect()
+                                                ))
                                                 .toList(),
-                                        q.getQuestionType().name(),
+                                        q.getQuestionType(),
                                         q.getPoints(),
                                         q.getCode(),
-                                        q.getDifficulty() != null ? q.getDifficulty().name() : null,
+                                        q.getDifficulty(),
                                         q.getHint()
                                 )
                         ).toList()
                 ));
     }
-
     @Override
     @Transactional
     public boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer) {

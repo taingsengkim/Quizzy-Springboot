@@ -8,6 +8,7 @@ import co.istad.y2.quizzy.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,11 @@ public class AuthController {
 
     // Get all users (no quiz history)
     @GetMapping("/users")
-    public List<AllUserResponseDto> getAll(){
-        return authService.findAll();
+    public Page<AllUserResponseDto> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        return authService.findAll(page, size);
     }
 
     // Get specific user by ID (with quiz summary if you want)

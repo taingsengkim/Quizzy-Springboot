@@ -61,7 +61,7 @@ public class QuizController {
 
 
     @GetMapping("/categories/{id}")
-    public ResponseEntity<Page<QuizPlayResponseDto>> getQuizByCategory(@PathVariable Long id,
+    public ResponseEntity<Page<QuizResponseDto>> getQuizByCategory(@PathVariable Long id,
                                                        @RequestParam(defaultValue = "0") int page,
                                                        @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(quizService.findByCategoryId(id, page, size));
