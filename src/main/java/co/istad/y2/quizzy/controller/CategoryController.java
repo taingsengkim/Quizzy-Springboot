@@ -33,9 +33,16 @@ public class CategoryController {
 
         User user = authService.getUserFromToken(authHeader);
 
-        boolean isAdmin = user.getRoles().stream().anyMatch(r->r.getName().equalsIgnoreCase("ADMIN"));
-        if(!isAdmin){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED");
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+
+        boolean isAdmin = user.getRoles() != null &&
+                user.getRoles().stream()
+                        .anyMatch(r -> r.getName().equalsIgnoreCase("ADMIN"));
+
+        if (!isAdmin) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED");
         }
         System.out.println(user);
         return categoryService.createCategory(createCategoryDto,user);
