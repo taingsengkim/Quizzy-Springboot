@@ -56,6 +56,7 @@ public class CategoryController {
 //    }
     @GetMapping
     public List<ListCategoryResponseDto> getAllCategories(){
+        System.out.println("GET /categories CALLED");
         return categoryService.getAllCategoriesWithQuestionCount();
     }
     @DeleteMapping("/{id}")
