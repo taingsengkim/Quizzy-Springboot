@@ -5,7 +5,9 @@ import co.istad.y2.quizzy.dto.quiz_result.*;
 import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.service.AuthService;
 import co.istad.y2.quizzy.service.QuizServiceResult;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -29,13 +31,28 @@ public class QuizResultController {
             @RequestBody SubmitQuizDto submitQuizDto){
 
         User user = authService.getUserFromToken(authHeader);
-        return quizServiceResult.submitQuiz(submitQuizDto,user);
+
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+
+        if (user.getRoles() == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No roles");
+        }        return quizServiceResult.submitQuiz(submitQuizDto,user);
     }
 
     @GetMapping("/history")
     public List<QuizResultHistoryDto> getHistory(
             @RequestHeader("Authorization") String authHeader) {
         User user = authService.getUserFromToken(authHeader);
+
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+
+        if (user.getRoles() == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No roles");
+        }
         return quizServiceResult.getUserHistory(user);
     }
 
@@ -45,7 +62,14 @@ public class QuizResultController {
             @RequestHeader("Authorization") String authHeader) {
 
         User user = authService.getUserFromToken(authHeader);
-        return quizServiceResult.getResultDetail(id, user);
+
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+
+        if (user.getRoles() == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No roles");
+        }        return quizServiceResult.getResultDetail(id, user);
     }
 
 //    @GetMapping
