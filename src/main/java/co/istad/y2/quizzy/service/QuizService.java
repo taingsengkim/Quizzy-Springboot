@@ -6,6 +6,7 @@ import co.istad.y2.quizzy.dto.quiz.QuizResponseDto;
 import co.istad.y2.quizzy.dto.quiz.QuizUpdateDto;
 import co.istad.y2.quizzy.model.Quiz;
 import co.istad.y2.quizzy.repository.QuizRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +18,9 @@ public interface QuizService {
     QuizResponseDto updateQuiz(Long id, QuizUpdateDto dto);
     void deleteQuiz(Long id);
     QuizResponseDto findById(Long id);
-    List<QuizResponseDto> findAll();
+    Page<QuizResponseDto> findAll(int page, int size);
     QuizPlayResponseDto getQuizForPlay(Long quizId);
-    List<QuizPlayResponseDto> findByCategoryId(Long categoryId);
-    boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer);
+    Page<QuizPlayResponseDto> findByCategoryId(Long categoryId, int page, int size);    boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer);
     int totalQuestions(Long quizId);
     String getHint(Long quizId, Long questionId, String attempId);
     void resetHint(String attempId);

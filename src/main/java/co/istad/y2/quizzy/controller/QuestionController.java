@@ -10,6 +10,7 @@ import co.istad.y2.quizzy.service.AuthService;
 import co.istad.y2.quizzy.service.QuestionServiceImpl;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,9 +46,12 @@ public class QuestionController {
     }
 
 
-    @GetMapping()
-    public List<QuestionResponseDto> getQuestions(){
-        return questionService.getAllQuestions();
+    @GetMapping
+    public ResponseEntity<Page<QuestionResponseDto>> getQuestions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(questionService.getAllQuestions(page, size));
     }
 
 

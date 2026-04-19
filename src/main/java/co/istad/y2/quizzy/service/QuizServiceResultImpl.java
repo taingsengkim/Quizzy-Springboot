@@ -6,6 +6,9 @@ import co.istad.y2.quizzy.repository.QuestionRepository;
 import co.istad.y2.quizzy.repository.QuizRepository;
 import co.istad.y2.quizzy.repository.QuizResultRepository;
 import co.istad.y2.quizzy.repository.UserAnswerRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,16 +87,18 @@ public class QuizServiceResultImpl implements QuizServiceResult {
     }
 
     @Override
-    public List<QuizResultHistoryDto> getUserHistory(User user) {
-        return quizResultRepository.findByUser(user).stream()
+    public Page<QuizResultHistoryDto> getUserHistory(User user, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return quizResultRepository.findByUser(user, pageable)
                 .map(r -> new QuizResultHistoryDto(
                         r.getId(),
                         r.getQuiz().getTitle(),
                         r.getScore(),
                         r.getTotal(),
                         r.getDuration()
-                ))
-                .toList();
+                ));
     }
 
     @Override

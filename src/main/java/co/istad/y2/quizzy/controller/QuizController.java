@@ -7,6 +7,7 @@ import co.istad.y2.quizzy.dto.quiz.QuizUpdateDto;
 import co.istad.y2.quizzy.model.Quiz;
 import co.istad.y2.quizzy.service.QuizService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,8 +46,11 @@ public class QuizController {
 
     // Get all quizzes
     @GetMapping
-    public List<QuizResponseDto> getAllQuizzes() {
-        return quizService.findAll();
+    public  ResponseEntity<Page<QuizResponseDto>>  getAllQuizzes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(quizService.findAll(page, size));
     }
 
     // Get quiz by id
@@ -57,8 +61,10 @@ public class QuizController {
 
 
     @GetMapping("/categories/{id}")
-    public List<QuizPlayResponseDto> getQuizByCategory(@PathVariable Long id) {
-        return quizService.findByCategoryId(id);
+    public ResponseEntity<Page<QuizPlayResponseDto>> getQuizByCategory(@PathVariable Long id,
+                                                       @RequestParam(defaultValue = "0") int page,
+                                                       @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(quizService.findByCategoryId(id, page, size));
     }
 
 

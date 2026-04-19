@@ -8,6 +8,7 @@ import co.istad.y2.quizzy.model.Answer;
 import co.istad.y2.quizzy.model.Category;
 import co.istad.y2.quizzy.model.Question;
 import co.istad.y2.quizzy.model.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,8 +17,7 @@ public interface QuestionService {
 
     QuestionResponseDto createQuestion(CreateQuestionDto createQuestionDto, User user);
 
-    List<QuestionResponseDto> getAllQuestions();
-
+    Page<QuestionResponseDto> getAllQuestions(int page, int size);
 //    List<QuestionResponseDto> getQuestionsByCategory(Long categoryId);
 
     QuestionResponseDto updateQuestion(Long id, UpdateQuestionDto dto);

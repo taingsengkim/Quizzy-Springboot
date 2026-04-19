@@ -9,6 +9,9 @@ import co.istad.y2.quizzy.mapper.CategoryMapper;
 import co.istad.y2.quizzy.model.Category;
 import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,18 +38,20 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.mapToResponse(saved);
     }
 
+
     @Override
-    public List<ListCategoryResponseDto> getAllCategoriesWithQuestionCount() {
-        return categoryRepository.findAllWithQuizCount()
-                .stream()
+    public Page<ListCategoryResponseDto> getAllCategoriesWithQuestionCount(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return categoryRepository.findAllWithQuizCount(pageable)
                 .map(obj -> new ListCategoryResponseDto(
-                        (Long) obj[0],              // id
-                        (String) obj[1],           // name
-                        ((Long) obj[2]).intValue(),// totalQuiz
-                        (String) obj[3],           // description
-                        (String) obj[4]            // imageUrl
-                ))
-                .toList();
+                        (Long) obj[0],
+                        (String) obj[1],
+                        ((Long) obj[2]).intValue(),
+                        (String) obj[3],
+                        (String) obj[4]
+                ));
     }
 
 //    @Override

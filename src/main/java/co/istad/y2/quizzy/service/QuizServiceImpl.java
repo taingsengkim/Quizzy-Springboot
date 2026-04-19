@@ -14,6 +14,9 @@ import co.istad.y2.quizzy.repository.CategoryRepository;
 import co.istad.y2.quizzy.repository.QuestionRepository;
 import co.istad.y2.quizzy.repository.QuizRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -122,9 +125,11 @@ public class QuizServiceImpl implements QuizService{
     }
 
     @Override
-    public List<QuizResponseDto> findAll() {
-        return quizRepository.findAllWithQuestions().stream()
-                .map(quizMapper::mapToResponse).collect(Collectors.toList());
+    public Page<QuizResponseDto> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return quizRepository.findAll(pageable)
+                .map(quizMapper::mapToResponse);
     }
 
     @Override
@@ -159,11 +164,16 @@ public class QuizServiceImpl implements QuizService{
     }
 
     @Override
-    public List<QuizPlayResponseDto> findByCategoryId(Long categoryId) {
-        categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found!"));
+    public Page<QuizPlayResponseDto> findByCategoryId(Long categoryId, int page, int size) {
 
-        return quizRepository.findByCategoryId(categoryId).stream()
+        categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Category Not Found!"
+                ));
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return quizRepository.findByCategoryId(categoryId, pageable)
                 .map(quiz -> new QuizPlayResponseDto(
                         quiz.getId(),
                         quiz.getTitle(),
@@ -184,9 +194,9 @@ public class QuizServiceImpl implements QuizService{
                                         q.getHint()
                                 )
                         ).toList()
-                ))
-                .toList();
+                ));
     }
+
     @Override
     @Transactional
     public boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer) {

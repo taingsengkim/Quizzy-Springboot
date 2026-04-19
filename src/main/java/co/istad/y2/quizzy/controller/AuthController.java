@@ -5,9 +5,11 @@ import co.istad.y2.quizzy.jwt.JwtUtil;
 import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.model.UserStatus;
 import co.istad.y2.quizzy.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 

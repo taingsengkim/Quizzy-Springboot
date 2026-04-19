@@ -12,6 +12,9 @@ import co.istad.y2.quizzy.repository.QuizRepository;
 import co.istad.y2.quizzy.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -91,13 +94,32 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
-    public List<QuestionResponseDto> getAllQuestions(){
-        return questionRepository.findAll().stream().map(q->{
-            List<AnswerResponseDto> answerResponseDtos = q.getAnswers().stream()
-                    .map(a-> new AnswerResponseDto(a.getId(),a.getText(),a.isCorrect()))
-                    .toList();
-             return questionMapper.mapToResponse(q);
-        }).toList();
+    public Page<QuestionResponseDto> getAllQuestions(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return questionRepository.findAll(pageable)
+                .map(q -> {
+
+                    List<AnswerResponseDto> answerResponseDtos = q.getAnswers().stream()
+                            .map(a -> new AnswerResponseDto(
+                                    a.getId(),
+                                    a.getText(),
+                                    a.isCorrect()
+                            ))
+                            .toList();
+
+                    return new QuestionResponseDto(
+                            q.getId(),
+                            q.getText(),
+                            answerResponseDtos,
+                            q.getQuestionType(),
+                            q.getPoints(),
+                            q.getCode(),
+                            q.getDifficulty(),
+                            q.getHint()
+                    );
+                });
     }
 
     @Override

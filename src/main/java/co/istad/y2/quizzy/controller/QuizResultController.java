@@ -5,6 +5,7 @@ import co.istad.y2.quizzy.dto.quiz_result.*;
 import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.service.AuthService;
 import co.istad.y2.quizzy.service.QuizServiceResult;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,18 +43,18 @@ public class QuizResultController {
     }
 
     @GetMapping("/history")
-    public List<QuizResultHistoryDto> getHistory(
-            @RequestHeader("Authorization") String authHeader) {
+    public Page<QuizResultHistoryDto> getHistory(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         User user = authService.getUserFromToken(authHeader);
 
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        if (user == null || user.getRoles() == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        if (user.getRoles() == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No roles");
-        }
-        return quizServiceResult.getUserHistory(user);
+        return quizServiceResult.getUserHistory(user, page, size);
     }
 
     @GetMapping("/{id}")
