@@ -18,6 +18,7 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     FROM Category c
     LEFT JOIN c.quizzes q
     GROUP BY c.id, c.name, c.description, c.imageUrl
+    ORDER BY c.updatedAt DESC
     """)
     Page<Object[]> findAllWithQuizCount(Pageable pageable);
 
@@ -27,6 +28,7 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     LEFT JOIN c.quizzes q
     WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%'))
     GROUP BY c.id, c.name, c.description, c.imageUrl
+    ORDER BY c.updatedAt DESC
     """)
     Page<Object[]> findAllWithQuizCountAndSearch(String search, Pageable pageable);
 }

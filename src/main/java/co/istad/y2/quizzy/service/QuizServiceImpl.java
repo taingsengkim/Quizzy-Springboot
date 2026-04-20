@@ -135,15 +135,12 @@ public class QuizServiceImpl implements QuizService{
 
         if (categoryId != null && search != null && !search.isEmpty()) {
             result = quizRepository.findByTitleAndCategory(search, categoryId, pageable);
-        }
-        else if (categoryId != null) {
+        } else if (categoryId != null) {
             result = quizRepository.findByCategoryId(categoryId, pageable);
-        }
-        else if (search != null && !search.isEmpty()) {
+        } else if (search != null && !search.isEmpty()) {
             result = quizRepository.searchByTitle(search, pageable);
-        }
-        else {
-            result = quizRepository.findAll(pageable);
+        } else {
+            result = quizRepository.findAllSorted(pageable);
         }
 
         return result.map(quizMapper::mapToResponse);
