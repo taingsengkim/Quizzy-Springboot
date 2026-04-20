@@ -11,7 +11,7 @@ public record QuizResponseDto(
         Integer duration,
 //        String categoryName,
         Long categoryId,
-
+        Integer maxHintsPerQuestion,
 //        String createdByUsername,
         List<QuestionResponseDto> questions
 ) {

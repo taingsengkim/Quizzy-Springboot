@@ -14,6 +14,7 @@ import org.mapstruct.Mapping;
 public interface QuizMapper {
     @Mapping(target = "categoryId", source = "category.id")     // Maps Quiz.category.id to DTO categoryId
 //    @Mapping(target = "createdByUsername", source = "createdBy.username")
+    @Mapping(source = "maxHintsPerQuestion", target = "maxHintsPerQuestion")
     QuizResponseDto mapToResponse(Quiz quiz);
 
 

@@ -33,4 +33,6 @@ public class Quiz extends BaseEntity{
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions;
 
+
+    private Integer maxHintsPerQuestion ;
 }

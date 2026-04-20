@@ -56,6 +56,7 @@ public class QuizServiceImpl implements QuizService{
         Quiz quiz = new Quiz();
         quiz.setTitle(quizDto.title());
         quiz.setDescription(quizDto.description());
+        quiz.setMaxHintsPerQuestion(quizDto.maxHintsPerQuestion());
         quiz.setDuration(quizDto.duration());
         if (quizDto.categoryId() != null) {
             categoryRepository.findById(quizDto.categoryId())
@@ -145,7 +146,6 @@ public class QuizServiceImpl implements QuizService{
 
         return result.map(quizMapper::mapToResponse);
     }
-
     @Override
     @Transactional
     public QuizPlayResponseDto getQuizForPlay(Long quizId) {
@@ -160,6 +160,7 @@ public class QuizServiceImpl implements QuizService{
                 quiz.getDescription(),
                 quiz.getDuration(),
                 quiz.getCategory() != null ? quiz.getCategory().getId() : null,
+                quiz.getMaxHintsPerQuestion(),
                 quiz.getQuestions().stream().map(q ->
                         new QuestionPlayDto(
                                 q.getId(),
@@ -194,6 +195,7 @@ public class QuizServiceImpl implements QuizService{
                         quiz.getDescription(),
                         quiz.getDuration(),
                         quiz.getCategory() != null ? quiz.getCategory().getId() : null,
+                        quiz.getMaxHintsPerQuestion(),
                         quiz.getQuestions().stream().map(q ->
                                 new QuestionResponseDto(
                                         q.getId(),
@@ -239,32 +241,40 @@ public class QuizServiceImpl implements QuizService{
 
     public String getHint(Long quizId, Long questionId, String attemptId) {
 
-        // get attempt map
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz Not Found"));
+
+        // quiz does not support hints
+        if (quiz.getMaxHintsPerQuestion() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "This quiz does not allow hints"
+            );
+        }
         Map<Long, Integer> attemptHints =
                 hintUsage.computeIfAbsent(attemptId, k -> new HashMap<>());
 
         int used = attemptHints.getOrDefault(questionId, 0);
 
-        if (used >= 2) {
+        if (used >= quiz.getMaxHintsPerQuestion()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "You can only use 2 hints per question"
+                    "You have used all " + quiz.getMaxHintsPerQuestion() + " hint(s) for this question"
             );
         }
-
-        // increment usage
-        attemptHints.put(questionId, used + 1);
-
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz Not Found"));
-
         Question question = quiz.getQuestions().stream()
                 .filter(q -> q.getId().equals(questionId))
                 .findFirst()
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Question Not Found"));
-
+        if (question.getHint() == null || question.getHint().isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "This question has no hint available"
+            );
+        }
+        attemptHints.put(questionId, used + 1);
         return question.getHint();
     }
     @Override

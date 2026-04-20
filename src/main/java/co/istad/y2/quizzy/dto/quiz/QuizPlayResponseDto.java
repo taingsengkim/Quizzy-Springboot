@@ -10,6 +10,7 @@ public record QuizPlayResponseDto (
         String description,
         Integer duration,
         Long categoryId,
+        Integer maxHintsPerQuestion,
         List<QuestionPlayDto> questions
         ){
 }

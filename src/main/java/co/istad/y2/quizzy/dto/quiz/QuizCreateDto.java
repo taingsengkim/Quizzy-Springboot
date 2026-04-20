@@ -18,6 +18,7 @@ public record QuizCreateDto(
         Integer duration,
         @NotNull(message = "Category ID is required")
         Long categoryId,
+        Integer maxHintsPerQuestion,
         @NotNull(message = "Category ID is required")
         List<QuestionCreateDto> questions
 ) {
