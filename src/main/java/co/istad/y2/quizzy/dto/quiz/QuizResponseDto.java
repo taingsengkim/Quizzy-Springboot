@@ -14,5 +14,6 @@ public record QuizResponseDto(
         Integer maxHintsPerQuestion,
 //        String createdByUsername,
         List<QuestionResponseDto> questions
+
 ) {
 }

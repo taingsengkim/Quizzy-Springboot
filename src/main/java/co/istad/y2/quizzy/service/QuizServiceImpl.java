@@ -111,6 +111,9 @@ public class QuizServiceImpl implements QuizService{
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found!"));
             quiz.setCategory(category);
         }
+        if (dto.maxHintsPerQuestion() != null) {
+            quiz.setMaxHintsPerQuestion(dto.maxHintsPerQuestion());
+        }
         Quiz updated = quizRepository.save(quiz);
         return quizMapper.mapToResponse(updated);
     }

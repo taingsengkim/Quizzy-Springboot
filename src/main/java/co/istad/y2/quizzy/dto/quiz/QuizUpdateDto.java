@@ -15,6 +15,8 @@ public record QuizUpdateDto(
         @Positive(message = "Duration must be a positive number")
         Integer duration,
         @NotNull(message = "Category ID is required")
-        Long categoryId
+        Long categoryId,
+        @Positive(message = "Max hints per question must be a positive number")
+        Integer maxHintsPerQuestion
 ) {
 }
