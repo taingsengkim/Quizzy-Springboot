@@ -127,11 +127,26 @@ public class QuizServiceImpl implements QuizService{
     }
 
     @Override
-    public Page<QuizResponseDto> findAll(int page, int size) {
+    public Page<QuizResponseDto> findAll(int page, int size, String search, Long categoryId) {
+
         Pageable pageable = PageRequest.of(page, size);
 
-        return quizRepository.findAll(pageable)
-                .map(quizMapper::mapToResponse);
+        Page<Quiz> result;
+
+        if (categoryId != null && search != null && !search.isEmpty()) {
+            result = quizRepository.findByTitleAndCategory(search, categoryId, pageable);
+        }
+        else if (categoryId != null) {
+            result = quizRepository.findByCategoryId(categoryId, pageable);
+        }
+        else if (search != null && !search.isEmpty()) {
+            result = quizRepository.searchByTitle(search, pageable);
+        }
+        else {
+            result = quizRepository.findAll(pageable);
+        }
+
+        return result.map(quizMapper::mapToResponse);
     }
 
     @Override

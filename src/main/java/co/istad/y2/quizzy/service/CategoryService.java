@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public interface CategoryService {
     CategoryResponseDto createCategory(CreateCategoryDto createCategoryDto, User user);
-    Page<ListCategoryResponseDto> getAllCategoriesWithQuestionCount(int page, int size);
+    Page<ListCategoryResponseDto> getAllCategoriesWithQuestionCount(int page, int size, String search);
     //    Category getCategoryEntityById(Long id);
     void deleteCategory(Long id);
     CategoryResponseDto updateCategory(Long id, UpdateCategoryDto updateCategoryDto);

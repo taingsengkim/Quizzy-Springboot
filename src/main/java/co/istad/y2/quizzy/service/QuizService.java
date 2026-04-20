@@ -18,7 +18,7 @@ public interface QuizService {
     QuizResponseDto updateQuiz(Long id, QuizUpdateDto dto);
     void deleteQuiz(Long id);
     QuizResponseDto findById(Long id);
-    Page<QuizResponseDto> findAll(int page, int size);
+    Page<QuizResponseDto> findAll(int page, int size, String search, Long categoryId);
     QuizPlayResponseDto getQuizForPlay(Long quizId);
     Page<QuizResponseDto> findByCategoryId(Long categoryId, int page, int size);
     boolean isCorrectAnswer(Long quizId, int questionIndex, String userAnswer);

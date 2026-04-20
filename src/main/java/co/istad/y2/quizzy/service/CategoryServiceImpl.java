@@ -40,20 +40,26 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public Page<ListCategoryResponseDto> getAllCategoriesWithQuestionCount(int page, int size) {
+    public Page<ListCategoryResponseDto> getAllCategoriesWithQuestionCount(int page, int size, String search) {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return categoryRepository.findAllWithQuizCount(pageable)
-                .map(obj -> new ListCategoryResponseDto(
-                        (Long) obj[0],
-                        (String) obj[1],
-                        ((Long) obj[2]).intValue(),
-                        (String) obj[3],
-                        (String) obj[4]
-                ));
-    }
+        Page<Object[]> result;
 
+        if (search != null && !search.isEmpty()) {
+            result = categoryRepository.findAllWithQuizCountAndSearch(search, pageable);
+        } else {
+            result = categoryRepository.findAllWithQuizCount(pageable);
+        }
+
+        return result.map(obj -> new ListCategoryResponseDto(
+                (Long) obj[0],
+                (String) obj[1],
+                ((Long) obj[2]).intValue(),
+                (String) obj[3],
+                (String) obj[4]
+        ));
+    }
 //    @Override
 //    public Category getCategoryEntityById(Long id){
 //        return categoryRepository.findById(id)

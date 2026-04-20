@@ -58,9 +58,10 @@ public class CategoryController {
     @GetMapping
     public Page<ListCategoryResponseDto> getAllCategories(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search
     ) {
-        return categoryService.getAllCategoriesWithQuestionCount(page, size);
+        return categoryService.getAllCategoriesWithQuestionCount(page, size, search);
     }
     @DeleteMapping("/{id}")
     public void deleteCategory(@PathVariable Long id){

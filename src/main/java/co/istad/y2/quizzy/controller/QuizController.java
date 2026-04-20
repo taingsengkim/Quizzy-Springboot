@@ -46,11 +46,15 @@ public class QuizController {
 
     // Get all quizzes
     @GetMapping
-    public  ResponseEntity<Page<QuizResponseDto>>  getAllQuizzes(
+    public ResponseEntity<Page<QuizResponseDto>> getAllQuizzes(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Long categoryId
     ) {
-        return ResponseEntity.ok(quizService.findAll(page, size));
+        return ResponseEntity.ok(
+                quizService.findAll(page, size, search, categoryId)
+        );
     }
 
     // Get quiz by id

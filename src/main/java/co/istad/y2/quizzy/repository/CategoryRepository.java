@@ -20,4 +20,13 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     GROUP BY c.id, c.name, c.description, c.imageUrl
     """)
     Page<Object[]> findAllWithQuizCount(Pageable pageable);
+
+    @Query("""
+    SELECT c.id, c.name, COUNT(q), c.description, c.imageUrl
+    FROM Category c
+    LEFT JOIN c.quizzes q
+    WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%'))
+    GROUP BY c.id, c.name, c.description, c.imageUrl
+    """)
+    Page<Object[]> findAllWithQuizCountAndSearch(String search, Pageable pageable);
 }
