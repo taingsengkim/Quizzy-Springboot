@@ -129,5 +129,24 @@ public class QuizRoomController {
         messagingTemplate.convertAndSend("/topic/room/" + room.getRoomCode(), room);
     }
 
+    @MessageMapping("/time-up")
+    public void timeUp(@Payload RoomMessage message) {
+        log.info("time-up: roomCode={}", message.roomCode());
+        QuizRoom room = roomService.getRoom(message.roomCode());
+        if (room == null || !room.isStarted() || room.isFinished()) return;
+
+        // Force-finish all players who haven't finished yet
+        for (String participant : room.getParticipants()) {
+            if (!room.getFinishedPlayers().contains(participant)) {
+                room.getFinishedPlayers().add(participant);
+                room.getFinishTime().put(participant, System.currentTimeMillis());
+                room.getPlayerCurrentQuestion().remove(participant);
+            }
+        }
+
+        room.setFinished(true);
+        messagingTemplate.convertAndSend("/topic/room/" + room.getRoomCode(), room);
+    }
+
 
 }

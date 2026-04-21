@@ -16,6 +16,7 @@ public class QuizRoom {
     private Set<String> participants = new HashSet<>();
     private boolean started = false;
     private boolean finished = false;
+    private Long startedAt = null;
 
     private Map<String, Integer> scores = new HashMap<>();
     private Map<String, Long> finishTime = new HashMap<>();

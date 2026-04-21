@@ -43,6 +43,7 @@ public class RoomService {
         QuizRoom room = rooms.get(roomCode);
         if (room != null && room.getOwner().equals(username)) {
             room.setStarted(true);
+            room.setStartedAt(System.currentTimeMillis());
             // Initialize every player at question index 0
             for (String participant : room.getParticipants()) {
                 room.getPlayerQuestionIndex().put(participant, 0);
