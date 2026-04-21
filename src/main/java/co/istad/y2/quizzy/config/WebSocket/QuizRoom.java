@@ -50,4 +50,17 @@ public class QuizRoom {
             this.text = text;
         }
     }
+
+    private Map<String, List<AnswerResult>> playerAnswerHistory = new HashMap<>();
+
+    @Getter
+    @Setter
+    public static class AnswerResult {
+        private int questionIndex;
+        private String questionText;
+        private List<String> selectedAnswerTexts;
+        private List<String> correctAnswerTexts;
+        private boolean correct;
+        private Integer points;
+    }
 }

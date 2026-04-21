@@ -12,7 +12,11 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -61,46 +65,69 @@ public class QuizRoomController {
 
     @MessageMapping("/answer-question")
     public void answerQuestion(@Payload RoomMessage message) {
-        log.info("answer-question: user={} roomCode={} answer={}", message.username(), message.roomCode(), message.answer());
+        log.info("answer-question: user={} roomCode={} answer={}",
+                message.username(), message.roomCode(), message.answer());
+
         QuizRoom room = roomService.getRoom(message.roomCode());
         if (room == null || !room.isStarted()) return;
+
         String username = message.username();
-        // If this player already finished all questions ignore
         if (room.getFinishedPlayers().contains(username)) return;
+
         int myIndex = room.getPlayerQuestionIndex().getOrDefault(username, 0);
-        // Prevent answering same question twice
-        room.getPlayerAnsweredQuestions().computeIfAbsent(username, k -> new java.util.HashSet<>());
+
+        room.getPlayerAnsweredQuestions().computeIfAbsent(username, k -> new HashSet<>());
         if (room.getPlayerAnsweredQuestions().get(username).contains(myIndex)) return;
         room.getPlayerAnsweredQuestions().get(username).add(myIndex);
-        // Check correctness
+
         QuizPlayResponseDto quiz = quizService.getQuizForPlay(room.getQuizId());
         QuestionPlayDto question = quiz.questions().get(myIndex);
-// Parse multiple answers
+
         String[] answerIds = message.answer().split(",");
+        Set<Long> selectedIds = Arrays.stream(answerIds)
+                .map(String::trim)
+                .map(Long::parseLong)
+                .collect(Collectors.toSet());
 
-            Set<Long> selectedIds = java.util.Arrays.stream(answerIds)
-                    .map(String::trim)
-                    .map(Long::parseLong)
-                    .collect(java.util.stream.Collectors.toSet());
+        Set<Long> correctIds = question.answers().stream()
+                .filter(a -> quizService.isCorrectAnswer(room.getQuizId(), myIndex, a.text()))
+                .map(a -> a.id())
+                .collect(Collectors.toSet());
 
-    // Get correct answers
-            Set<Long> correctIds = question.answers().stream()
-                    .filter(a -> quizService.isCorrectAnswer(room.getQuizId(), myIndex, a.text()))
-                    .map(a -> a.id())
-                    .collect(java.util.stream.Collectors.toSet());
+        boolean correct = selectedIds.equals(correctIds);
 
-    // Check if user selected EXACT correct answers
-            boolean correct = selectedIds.equals(correctIds);
         if (correct) {
-            room.getScores().merge(username, 1, Integer::sum);
+            room.getScores().merge(username, question.points() != null ? question.points() : 1, Integer::sum);
             log.info("User {} correct on q{} — score: {}", username, myIndex, room.getScores().get(username));
         }
-        // Advance THIS player to next question
+        //Record answer history
+        QuizRoom.AnswerResult result = new QuizRoom.AnswerResult();
+        result.setQuestionIndex(myIndex);
+        result.setQuestionText(question.text());
+        result.setCorrect(correct);
+        result.setPoints(correct && question.points() != null ? question.points() : 0);
+
+        result.setSelectedAnswerTexts(
+                question.answers().stream()
+                        .filter(a -> selectedIds.contains(a.id()))
+                        .map(a -> a.text())
+                        .toList()
+        );
+        result.setCorrectAnswerTexts(
+                question.answers().stream()
+                        .filter(a -> correctIds.contains(a.id()))
+                        .map(a -> a.text())
+                        .toList()
+        );
+
+        room.getPlayerAnswerHistory()
+                .computeIfAbsent(username, k -> new ArrayList<>())
+                .add(result);
+        // Advance to next question
         room.getPlayerQuestionIndex().put(username, myIndex + 1);
         roomService.pushQuestionToPlayer(room, username, quizService);
-
-        // Broadcast updated room state to everyone
-        // Each player's frontend reads playerCurrentQuestion[their username]
         messagingTemplate.convertAndSend("/topic/room/" + room.getRoomCode(), room);
     }
+
+
 }
