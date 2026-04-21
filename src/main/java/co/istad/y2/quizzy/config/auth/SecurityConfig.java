@@ -35,6 +35,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers(
+                                "/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/quizzes/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/quizzes/*/start-attempt").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/quizzes/*/reset-hints").permitAll()
