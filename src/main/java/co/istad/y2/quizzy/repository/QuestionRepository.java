@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question,Long> {
     Page<Question> findAll(Pageable pageable);
+    List<Question> findByDifficulty(String difficulty);
 }

@@ -25,4 +25,6 @@ public interface QuestionService {
     void deleteQuestion(Long id);
 
 //    QuestionResponseDto getQuestionById(Long id);
+
+    List<QuestionResponseDto> getRandomQuestions(int size, String difficulty);
 }

@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -190,5 +191,39 @@ public class QuestionServiceImpl implements QuestionService {
         }
         questionRepository.delete(question);
         log.info("Question deleted successfully");
+    }
+
+    @Override
+    public List<QuestionResponseDto> getRandomQuestions(int size, String difficulty) {
+
+        List<Question> questions;
+
+        if (difficulty == null || difficulty.isBlank()) {
+            questions = questionRepository.findAll();
+        } else {
+            questions = questionRepository.findByDifficulty(difficulty.toUpperCase());
+        }
+
+        Collections.shuffle(questions);
+
+        return questions.stream()
+                .limit(size)
+                .map(q -> new QuestionResponseDto(
+                        q.getId(),
+                        q.getText(),
+                        q.getAnswers().stream()
+                                .map(a -> new AnswerResponseDto(
+                                        a.getId(),
+                                        a.getText(),
+                                        a.isCorrect()
+                                ))
+                                .toList(),
+                        q.getQuestionType(),
+                        q.getPoints(),
+                        q.getCode(),
+                        q.getDifficulty(),
+                        q.getHint()
+                ))
+                .toList();
     }
 }

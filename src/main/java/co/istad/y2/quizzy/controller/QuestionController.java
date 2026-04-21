@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 @RequestMapping("/api/v1/questions")
@@ -66,6 +68,16 @@ public class QuestionController {
     public ResponseEntity<Void> deleteQuestion(@PathVariable Long id) {
         questionService.deleteQuestion(id);
         return ResponseEntity.noContent().build();
+    }
+
+                                                                    @GetMapping("/random")
+        public ResponseEntity<List<QuestionResponseDto>> getRandomQuestions(
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) String difficulty
+    ) {
+        return ResponseEntity.ok(
+                questionService.getRandomQuestions(size, difficulty)
+        );
     }
 
 }
