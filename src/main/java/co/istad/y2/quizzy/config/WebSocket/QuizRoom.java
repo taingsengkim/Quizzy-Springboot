@@ -38,6 +38,7 @@ public class QuizRoom {
         private String code;
         private String questionType;
         private Integer points;
+        private String hint;
         private String difficulty;
     }
 

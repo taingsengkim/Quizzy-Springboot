@@ -80,6 +80,7 @@ public class RoomService {
         cq.setQuestionType(q.questionType());
         cq.setPoints(q.points());
         cq.setDifficulty(q.difficulty());
+        cq.setHint(q.hint());
         cq.setQuestionIndex(index);
         log.info("TYPE = {}, POINTS = {}, DIFF = {}",
                 q.questionType(),
