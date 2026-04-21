@@ -36,13 +36,24 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/quizzes/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/quizzes/*/start-attempt").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/quizzes/*/reset-hints").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/quizzes/**").hasAnyRole("ADMIN", "INSTRUCTOR")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/quizzes/**").hasAnyRole("ADMIN", "INSTRUCTOR")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/quizzes/**").hasAnyRole("ADMIN", "INSTRUCTOR")
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/questions/**").hasAnyRole("ADMIN", "INSTRUCTOR")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/questions/**").hasAnyRole("ADMIN", "INSTRUCTOR")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/questions/**").hasAnyRole("ADMIN", "INSTRUCTOR")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/questions/**").hasAnyRole("ADMIN", "INSTRUCTOR")
+
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // add this
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
