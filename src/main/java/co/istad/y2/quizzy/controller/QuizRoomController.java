@@ -12,10 +12,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -49,6 +46,14 @@ public class QuizRoomController {
     public void joinRoom(@Payload RoomMessage message) {
         log.info("join-room: user={} roomCode={}", message.username(), message.roomCode());
         QuizRoom room = roomService.joinRoom(message.roomCode(), message.username());
+        if (room == null) {
+            messagingTemplate.convertAndSendToUser(
+                    message.username(),
+                    "/queue/errors",
+                    Map.of("message", "Room \"" + message.roomCode() + "\" does not exist.")
+            );
+            return;
+        }
         if (room != null) {
             messagingTemplate.convertAndSend("/topic/room/" + room.getRoomCode(), room);
         }
