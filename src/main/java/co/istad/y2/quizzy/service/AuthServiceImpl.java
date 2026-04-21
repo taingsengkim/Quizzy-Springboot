@@ -2,7 +2,7 @@ package co.istad.y2.quizzy.service;
 
 import co.istad.y2.quizzy.dto.auth.*;
 import co.istad.y2.quizzy.dto.quiz.UserQuizSummaryDto;
-import co.istad.y2.quizzy.jwt.JwtUtil;
+import co.istad.y2.quizzy.config.auth.jwt.JwtUtil;
 import co.istad.y2.quizzy.model.Role;
 import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.model.UserStatus;

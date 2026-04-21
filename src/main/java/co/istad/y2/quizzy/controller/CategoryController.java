@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,25 +29,10 @@ public class CategoryController {
         this.authService = authService;
     }
     @PostMapping
-    public CategoryResponseDto createResponseDto(
-            @RequestHeader("Authorization") String authHeader,
-            @Valid @RequestBody CreateCategoryDto createCategoryDto){
-
-        User user = authService.getUserFromToken(authHeader);
-
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
-        }
-
-        boolean isAdmin = user.getRoles() != null &&
-                user.getRoles().stream()
-                        .anyMatch(r -> r.getName().equalsIgnoreCase("ADMIN"));
-
-        if (!isAdmin) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED");
-        }
-        System.out.println(user);
-        return categoryService.createCategory(createCategoryDto,user);
+    public CategoryResponseDto createCategory(
+            @Valid @RequestBody CreateCategoryDto createCategoryDto,
+            @AuthenticationPrincipal User user) {
+        return categoryService.createCategory(createCategoryDto, user);
     }
 //
 //    @PostMapping

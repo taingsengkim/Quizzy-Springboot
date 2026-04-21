@@ -1,4 +1,4 @@
-package co.istad.y2.quizzy.jwt;
+package co.istad.y2.quizzy.config.auth.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

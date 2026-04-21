@@ -4,7 +4,7 @@ package co.istad.y2.quizzy.controller;
 import co.istad.y2.quizzy.dto.question.CreateQuestionDto;
 import co.istad.y2.quizzy.dto.question.QuestionResponseDto;
 import co.istad.y2.quizzy.dto.question.UpdateQuestionDto;
-import co.istad.y2.quizzy.jwt.JwtUtil;
+import co.istad.y2.quizzy.config.auth.jwt.JwtUtil;
 import co.istad.y2.quizzy.model.User;
 import co.istad.y2.quizzy.service.AuthService;
 import co.istad.y2.quizzy.service.QuestionServiceImpl;
@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Slf4j
