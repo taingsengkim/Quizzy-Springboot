@@ -70,7 +70,7 @@ public class QuestionController {
         return ResponseEntity.noContent().build();
     }
 
-                                                                    @GetMapping("/random")
+      @GetMapping("/random")
         public ResponseEntity<List<QuestionResponseDto>> getRandomQuestions(
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String difficulty
