@@ -8,7 +8,9 @@ import co.istad.y2.quizzy.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -74,5 +76,8 @@ public class AuthController {
             @RequestBody UpdateProfileDto dto) {
         return authService.updateProfile(authHeader, dto);
     }
-
+    @PostMapping("/refresh")
+    public LoginResponseDto refresh(@RequestBody RefreshTokenDto dto) {
+        return authService.refreshToken(dto);
+    }
 }

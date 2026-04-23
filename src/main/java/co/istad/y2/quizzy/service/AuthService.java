@@ -21,4 +21,6 @@ public interface AuthService {
      UserResponseDto getUserDetail(Long id);
 
      UserResponseDto updateProfile(String authHeader, UpdateProfileDto dto);
+
+     LoginResponseDto refreshToken(RefreshTokenDto dto);
 }

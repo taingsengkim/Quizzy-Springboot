@@ -44,19 +44,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
 
         try {
-            String email = jwtUtil.extractEmail(token);
-            User user = userRepository.findByEmail(email).orElse(null);
+            if (jwtUtil.isTokenValid(token)) {
 
-            if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                log.info("User: {} Roles: {}", user.getEmail(), user.getRoles());
-                List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getName().toUpperCase()))
-                        .collect(Collectors.toList());
+                String email = jwtUtil.extractEmail(token);
+                User user = userRepository.findByEmail(email).orElse(null);
+                if (user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    log.info("User: {} Roles: {}", user.getEmail(), user.getRoles());
+                    List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+                            .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getName().toUpperCase()))
+                            .collect(Collectors.toList());
+                    UsernamePasswordAuthenticationToken auth =
+                            new UsernamePasswordAuthenticationToken(user.getEmail(), null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
 
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(user, null, authorities);
-
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            } else {
+                log.warn("Invalid or expired JWT");
             }
         } catch (Exception e) {
             log.warn("JWT validation failed: {}", e.getMessage());

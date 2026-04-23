@@ -116,8 +116,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public User getUserFromToken(String authHeader) {
         String token = authHeader.replace("Bearer", "").trim();
-        String email = jwtUtil.extractEmail(token);
-        return userRepository.findByEmail(email)
+
+        if (!jwtUtil.isTokenValid(token)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+
+        String email = jwtUtil.extractEmail(token);        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid credentials"));
     }
 
@@ -224,6 +228,24 @@ public class AuthServiceImpl implements AuthService {
         return getUserProfile(authHeader);
     }
 
+
+    @Override
+    public LoginResponseDto refreshToken(RefreshTokenDto dto) {
+        String refreshToken = dto.refreshToken();
+        // 1. Validate refresh token
+        if (!jwtUtil.isTokenValid(refreshToken)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired refresh token");
+        }
+        // 2. Extract user identity
+        String email = jwtUtil.extractEmail(refreshToken);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        // 3. Generate NEW tokens (rotation)
+        String newAccessToken = jwtUtil.generateAccessToken(email);
+        String newRefreshToken = jwtUtil.generateRefreshToken(email);
+        // 4. Return both
+        return new LoginResponseDto(newAccessToken, newRefreshToken);
+    }
 
 
 }
