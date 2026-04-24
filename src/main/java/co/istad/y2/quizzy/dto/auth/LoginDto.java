@@ -14,9 +14,11 @@ public record LoginDto(
         String email,
 
         @NotBlank
-        @Size(max = 150)
+        @Size(min = 8, max = 150)
+        @Pattern(
+                regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&]).+$",
+                message = "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character"
+        )
         String password
-
-
 ) {
 }
