@@ -41,10 +41,14 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/quizzes/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/quizzes/result/submit")
+                        .hasAnyRole("ADMIN", "INSTRUCTOR", "STUDENT")
+
                         .requestMatchers(HttpMethod.POST, "/api/v1/quizzes/*/start-attempt").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/quizzes/*/reset-hints").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/quizzes/**").hasAnyRole("ADMIN", "INSTRUCTOR")
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/quizzes/**").hasAnyRole("ADMIN", "INSTRUCTOR")
+
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/quizzes/**").hasAnyRole("ADMIN", "INSTRUCTOR")
 
                         .requestMatchers(HttpMethod.GET, "/api/v1/questions/**").hasAnyRole("ADMIN", "INSTRUCTOR")
