@@ -30,7 +30,7 @@ public class QuizResultController {
     public QuizResultResponseDto submitQuizDto(
             @RequestHeader("Authorization") String authHeader,
             @RequestBody SubmitQuizDto submitQuizDto){
-
+        System.out.println("AUTH HEADER: " + authHeader);
         User user = authService.getUserFromToken(authHeader);
 
         if (user == null) {

@@ -27,7 +27,7 @@ public class UserAnswer {
     @JoinTable(
             name = "user_answer_selected_answers",
             joinColumns = @JoinColumn(name = "user_answer_id"),
-            inverseJoinColumns = @JoinColumn(name = "answer_id")
+            inverseJoinColumns = @JoinColumn(name = "selected_answers_id")
     )
     private List<Answer> selectedAnswers;
 }
