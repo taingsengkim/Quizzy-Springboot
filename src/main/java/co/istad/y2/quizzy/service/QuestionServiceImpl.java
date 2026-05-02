@@ -6,10 +6,7 @@ import co.istad.y2.quizzy.dto.question.QuestionResponseDto;
 import co.istad.y2.quizzy.dto.question.UpdateQuestionDto;
 import co.istad.y2.quizzy.mapper.QuestionMapper;
 import co.istad.y2.quizzy.model.*;
-import co.istad.y2.quizzy.repository.AnswerRepository;
-import co.istad.y2.quizzy.repository.QuestionRepository;
-import co.istad.y2.quizzy.repository.QuizRepository;
-import co.istad.y2.quizzy.repository.UserRepository;
+import co.istad.y2.quizzy.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,17 +28,19 @@ public class QuestionServiceImpl implements QuestionService {
     private final UserRepository userRepository;
     private final QuizRepository quizRepository;
     private final QuestionMapper questionMapper;
-
+    private final UserAnswerRepository userAnswerRepository;
     public QuestionServiceImpl(QuestionRepository questionRepository,
                                AnswerRepository answerRepository,
                                UserRepository userRepository,
                                QuizRepository quizRepository,
-                               QuestionMapper questionMapper){
+                               QuestionMapper questionMapper,
+                               UserAnswerRepository userAnswerRepository){
         this.questionRepository = questionRepository;
         this.answerRepository = answerRepository;
         this.userRepository = userRepository;
         this.quizRepository = quizRepository;
         this.questionMapper = questionMapper;
+        this.userAnswerRepository = userAnswerRepository;
     }
 
     @Override
@@ -128,6 +127,9 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionResponseDto updateQuestion(Long id, UpdateQuestionDto dto) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Question Not Found!"));
+
+        userAnswerRepository.deleteSelectedAnswersByQuestionId(id);
+        userAnswerRepository.deleteUserAnswersByQuestionId(id);
         if (dto.text() != null) question.setText(dto.text());
         if (dto.code() != null) question.setCode(dto.code());
         if (dto.hint() != null) question.setHint(dto.hint());
@@ -180,17 +182,19 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public void deleteQuestion(Long id){
+    public void deleteQuestion(Long id) {
         Question question = questionRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Question Not Found!"));
-        log.info("Deleting question with id: {}", question.getId());
-        log.info("Question text: {}", question.getText());
-        Quiz quiz = question.getQuiz();
-        if (quiz != null) {
-            quiz.getQuestions().remove(question);
-        }
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Question Not Found!"));
+
+        // 1. Clear join table first
+        userAnswerRepository.deleteSelectedAnswersByQuestionId(id);
+
+        // 2. Delete user_answer rows for this question
+        userAnswerRepository.deleteUserAnswersByQuestionId(id);
+
+        // 3. Now safe to delete question (cascades to Answer)
         questionRepository.delete(question);
-        log.info("Question deleted successfully");
     }
 
     @Override

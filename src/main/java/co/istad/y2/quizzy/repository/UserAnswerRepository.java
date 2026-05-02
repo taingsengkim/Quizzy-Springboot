@@ -44,4 +44,23 @@ public interface UserAnswerRepository extends JpaRepository<UserAnswer,Long> {
         )
     """, nativeQuery = true)
     void deleteUserAnswersByCategoryId(@Param("categoryId") Long categoryId);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+    DELETE FROM user_answer_selected_answers
+    WHERE selected_answers_id IN (
+        SELECT id FROM answer
+        WHERE question_id = :questionId
+    )
+""", nativeQuery = true)
+    void deleteSelectedAnswersByQuestionId(@Param("questionId") Long questionId);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+    DELETE FROM user_answer
+    WHERE question_id = :questionId
+""", nativeQuery = true)
+    void deleteUserAnswersByQuestionId(@Param("questionId") Long questionId);
 }
