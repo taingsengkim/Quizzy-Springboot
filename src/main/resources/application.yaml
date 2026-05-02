@@ -35,4 +35,4 @@ spring:
   application:
     name: quizzy
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8090}

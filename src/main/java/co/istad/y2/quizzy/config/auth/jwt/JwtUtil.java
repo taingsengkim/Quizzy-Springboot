@@ -1,5 +1,6 @@
 package co.istad.y2.quizzy.config.auth.jwt;
 
+import co.istad.y2.quizzy.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.Claims;
@@ -21,11 +22,14 @@ public class JwtUtil {
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
-    public String generateAccessToken(String email){
+    public String generateAccessToken(User user){
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getEmail())
+                .claim("roles", user.getRoles().stream()
+                        .map(r -> r.getName())
+                        .toList())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000)) // 15 min
+                .setExpiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

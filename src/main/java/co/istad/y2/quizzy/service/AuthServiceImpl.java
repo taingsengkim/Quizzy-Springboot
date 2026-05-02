@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Your account is pending admin approval");
         }
 
-        String accessToken = jwtUtil.generateAccessToken(user.getEmail());
+        String accessToken = jwtUtil.generateAccessToken(user);
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
 
         return new LoginResponseDto(accessToken, refreshToken);
@@ -241,7 +241,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         // 3. Generate NEW tokens (rotation)
-        String newAccessToken = jwtUtil.generateAccessToken(email);
+        String newAccessToken = jwtUtil.generateAccessToken(user);
         String newRefreshToken = jwtUtil.generateRefreshToken(email);
         // 4. Return both
         return new LoginResponseDto(newAccessToken, newRefreshToken);

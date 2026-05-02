@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Setter
 @Getter
@@ -25,4 +28,7 @@ public class Answer extends BaseEntity {
     @JsonIgnore
     @JoinColumn(name = "question_id")
     private Question question;
+
+    @ManyToMany(mappedBy = "selectedAnswers")
+    private List<UserAnswer> userAnswers = new ArrayList<>();
 }

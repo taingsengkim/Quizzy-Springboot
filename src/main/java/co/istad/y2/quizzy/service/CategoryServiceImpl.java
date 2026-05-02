@@ -8,7 +8,11 @@ import co.istad.y2.quizzy.dto.category.UpdateCategoryDto;
 import co.istad.y2.quizzy.mapper.CategoryMapper;
 import co.istad.y2.quizzy.model.Category;
 import co.istad.y2.quizzy.model.User;
+import co.istad.y2.quizzy.model.UserAnswer;
 import co.istad.y2.quizzy.repository.CategoryRepository;
+import co.istad.y2.quizzy.repository.QuizResultRepository;
+import co.istad.y2.quizzy.repository.UserAnswerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +27,19 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
     private final CategoryRepository categoryRepository;
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper){
+    private final UserAnswerRepository userAnswerRepository;
+    private final QuizResultRepository quizResultRepository;
+
+    public CategoryServiceImpl(
+            CategoryRepository categoryRepository,
+            CategoryMapper categoryMapper,
+            UserAnswerRepository userAnswerRepository,
+            QuizResultRepository quizResultRepository
+    ) {
         this.categoryMapper = categoryMapper;
         this.categoryRepository = categoryRepository;
+        this.userAnswerRepository = userAnswerRepository;
+        this.quizResultRepository = quizResultRepository;
     }
     @Override
     public CategoryResponseDto createCategory(CreateCategoryDto createCategoryDto, User user){
@@ -67,8 +81,18 @@ public class CategoryServiceImpl implements CategoryService {
 //    }
 
     @Override
-    public void deleteCategory(Long id){
-        Category category = categoryRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found!"));
+    @Transactional
+    public void deleteCategory(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Category Not Found!"));
+        // 1. Clear join table first
+        userAnswerRepository.deleteSelectedAnswersByCategoryId(id);
+        // 2. Delete user_answer rows
+        userAnswerRepository.deleteUserAnswersByCategoryId(id);
+        // 3. Delete quiz_result rows
+        quizResultRepository.deleteQuizResultsByCategoryId(id);
+        // 4. Now safe to delete category (cascades Quiz-> Question-> Answer)
         categoryRepository.delete(category);
     }
 

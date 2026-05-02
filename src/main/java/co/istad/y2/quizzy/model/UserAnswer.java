@@ -23,7 +23,11 @@ public class UserAnswer {
     @ManyToOne
     private Question question;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinTable(
+            name = "user_answer_selected_answers",
+            joinColumns = @JoinColumn(name = "user_answer_id"),
+            inverseJoinColumns = @JoinColumn(name = "answer_id")
+    )
     private List<Answer> selectedAnswers;
-
 }
